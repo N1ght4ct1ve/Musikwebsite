@@ -93,6 +93,13 @@ body {
     
 }
 
+.current_song_cover img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+  }
+  
+
 .current_song_info {
     display: inline-block;
     padding: 1rem 1rem;
