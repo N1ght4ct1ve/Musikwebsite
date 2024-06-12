@@ -38,12 +38,17 @@ function detectColorScheme() {
 detectColorScheme();
 
 /* LIGHT/DARK MODE toggle */
+
+const toggle = document.getElementById("toggleDark");
+const body = document.querySelector("main");
 document.getElementById("toggleDark").onclick = function () {
     if (theme === "light") {
+        this.classList.toggle("bi-moon");
         document.documentElement.setAttribute("data-theme", "dark");
         theme = "dark";
         localStorage.setItem("theme", "dark");
     } else {
+        this.classList.toggle("bi-brightness-high-fill")
         document.documentElement.setAttribute("data-theme", "light");
         theme = "light";
         localStorage.setItem("theme", "light");
