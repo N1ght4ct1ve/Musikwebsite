@@ -1,7 +1,10 @@
 .mp3
+.mp4
+.jpg
 uploads/
 music/
+temp/
 .venv/
 .DS_Store/
 .DS_Store
-.jpg
+
