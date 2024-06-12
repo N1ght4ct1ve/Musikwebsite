@@ -10,7 +10,16 @@
     
 </head>
 <body>
+    <div id="sidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="#">Musicplayer</a>
+        <a href="https://www.fachschaft.informatik.uni-kl.de/">FSINFO</a>
+      </div>
+
+
+    <div id="root">
     <div id="main">
+        <button class="openbtn" onclick="openNav()">&#9776; MENU</button>
         <i class="bi bi-brightness-high-fill" id="toggleDark"></i>
     </div>
     <div id="main">
@@ -49,13 +58,13 @@
             </select>
             <input type="submit" value="Add to Queue">
         </form>
-
         
         <div>
             <button class="button glow-on-hover" type="button" onclick="sendCommand('start')">Start</button>
             <button class="button glow-on-hover" type="button" onclick="sendCommand('stop')">Stop</button>
             <button class="button glow-on-hover" type="button" onclick="sendCommand('skip')">Skip</button>
         </div>
+    </div>
     </div>
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
