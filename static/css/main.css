@@ -1,6 +1,7 @@
 :root {
-    --bg-color: #ffffff;
-    --main-color: #ffffff;
+    --bg-color: #000000;
+    --main-color: #3c3c3c;
+    --queue-color: #b5b5b5;
     --text-color: #000000;
     /* Grautöne */
     --grey-50: #f9fafb;
