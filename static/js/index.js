@@ -15,6 +15,11 @@ function sendCommand(command) {
     .then(() => refreshQueue());
 }
 
+
+document.getElementById('uploadButton').addEventListener('click', function() {
+    document.getElementById('uploadForm').submit();
+});
+
 /////
 var theme = "light";
 
