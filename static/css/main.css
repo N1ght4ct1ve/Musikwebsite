@@ -49,6 +49,10 @@ body {
 }
 
 #header {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
     border-radius: 20px;
     background-color: var(--main-color);
     padding: 10px;
