@@ -47,6 +47,7 @@
 body {
     background-color: var(--bg-color);
 }
+/*
 
 #header {
     position: relative;
@@ -60,6 +61,7 @@ body {
 
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+    */
 
 #main {
     border-radius: 20px;
@@ -116,6 +118,10 @@ body {
     font-size: 16px;
     margin: 4px 2px;
     cursor: pointer;
+}
+
+.input {
+    height: 32px;
 }
 
 option {
