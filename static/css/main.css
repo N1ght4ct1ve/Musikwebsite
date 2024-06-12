@@ -86,8 +86,10 @@ body {
     border-radius: 20px;
     display: inline-block;
     background-color: #000000;
+    background-size: cover;
     padding: 1rem 1rem;
     vertical-align: middle;
+    
 }
 
 .current_song_info {
