@@ -51,7 +51,6 @@ body {
 #header {
     position: relative;
     top: 50%;
-    transform: translateY(-50%);
 
     border-radius: 20px;
     background-color: var(--main-color);
