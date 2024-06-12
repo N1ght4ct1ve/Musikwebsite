@@ -15,6 +15,17 @@ function sendCommand(command) {
     .then(() => refreshQueue());
 }
 
+document.getElementById('fileButton').addEventListener('click', function() {
+    document.getElementById('fileInput').click();
+});
+
+document.getElementById('fileInput').addEventListener('change', function() {
+    if (this.files.length > 0) {
+        const fileName = this.files[0].name;
+        document.getElementById('fileButton').innerHTML = `Ausgewählte Datei: ${fileName}`;
+    }
+});
+
 /////
 var theme = "light";
 

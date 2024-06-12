@@ -89,6 +89,8 @@ body {
     display: inline-block;
     padding: 1rem 1rem;
     vertical-align: middle;
+    max-width: 50%;
+    text-wrap: wrap;
 }
 
 #queue {
@@ -192,4 +194,9 @@ li {
     0% { background-position: 0 0; }
     50% { background-position: 400% 0; }
     100% { background-position: 0 0; }
+}
+
+
+.hidden {
+    display: none;
 }
