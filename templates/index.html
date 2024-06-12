@@ -10,6 +10,7 @@
 </head>
 <body>
     <div id="main">
+<<<<<<< HEAD
         <i class="bi bi-brightness-high-fill" id="toggleDark"></i>
         <h1>Upload MP3 or Download from YouTube</h1>
         <form method="post" enctype="multipart/form-data" action="/upload">
@@ -21,6 +22,29 @@
             <input type="submit" value="Download from YouTube">
         </form>
         <h2>Queue</h2>
+=======
+        <div>
+            
+            <h1>Upload MP3 or Download from YouTube</h1>
+            <form method="post" enctype="multipart/form-data" action="/upload">
+                <input type="file" name="file">
+                <input class="button" type="submit" value="Upload MP3">
+            </form>
+            <form method="post" action="/download">
+                <input type="text" name="url" placeholder="YouTube URL">
+                <input class="button" type="submit" value="Download from YouTube">
+            </form>
+        </div>
+        <div class="current_song_parent">
+            <div class="current_song_cover">
+                <img id="cover" src="{{ current_song.cover }}" alt="Cover" width="200">
+            </div>
+            <div class="current_song_info">
+                <h2 id="current_song">{{ current_song.title }}</h2>
+            </div>
+        </div>
+        
+>>>>>>> refs/remotes/origin/main
         <ul id="queue">
             {% for song in playback_queue %}
             <li>{{ song }}</li>

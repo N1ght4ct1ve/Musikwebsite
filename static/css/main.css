@@ -49,15 +49,26 @@ body {
 }
 
 #header {
+    position: relative;
+    top: 50%;
+
     border-radius: 20px;
     background-color: var(--main-color);
     padding: 10px;
+
+    margin: 4px;
+
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 #main {
     border-radius: 20px;
     background-color: var(--main-color);
     padding: 10px;
+
+    margin: 4px;
+
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .current_song_parent {
@@ -68,6 +79,8 @@ body {
 }
 
 .current_song_cover {
+    height: 150px;
+    width: 150px; 
     border-radius: 20px;
     display: inline-block;
     background-color: #000000;
@@ -106,6 +119,7 @@ body {
 }
 
 option {
+    background-color: #2a2a2a;
     color: var(--text-color);
 }
 
