@@ -2,6 +2,34 @@
     --bg-color: #ffffff;
     --main-color: #ffffff;
     --text-color: #000000;
+    /* Grautöne */
+    --grey-50: #f9fafb;
+    --grey-100: #f4f5f7;
+    --grey-200: #e5e7eb;
+    --grey-300: #d2d6dc;
+    --grey-400: #9fa6b2;
+    --grey-500: #6b7280;
+    --grey-600: #4b5563;
+    --grey-700: #374151;
+    --grey-800: #252f3f;
+    --grey-900: #161e2e;
+
+    /* Weiß */
+    --white: #ffffff;
+
+    /* Lilatöne */
+    --purple-50: #faf5ff;
+    --purple-100: #f3e8ff;
+    --purple-200: #e9d5ff;
+    --purple-300: #d8b4fe;
+    --purple-400: #c084fc;
+    --purple-500: #a855f7;
+    --purple-600: #9333ea;
+    --purple-700: #7e22ce;
+    --purple-800: #6b21a8;
+    --purple-900: #581c87;
+    /* Schwarz */
+    --black: #000000;
 }
 
 [data-theme="dark"] {
@@ -20,6 +48,12 @@ body {
     background-color: var(--bg-color);
 }
 
+#header {
+    border-radius: 20px;
+    background-color: var(--main-color);
+    padding: 10px;
+}
+
 #main {
     border-radius: 20px;
     background-color: var(--main-color);
@@ -34,19 +68,18 @@ body {
 }
 
 .current_song_cover {
+    border-radius: 20px;
     display: inline-block;
-    border: 1px solid red;
+    background-color: #000000;
     padding: 1rem 1rem;
     vertical-align: middle;
 }
 
 .current_song_info {
     display: inline-block;
-    border: 1px solid red;
     padding: 1rem 1rem;
     vertical-align: middle;
 }
-
 
 #queue {
     border-radius: 20px;
@@ -57,8 +90,6 @@ body {
     overflow: hidden;
     overflow-y:scroll;
 }
-
-
 
 .button {
     background-color: #c39bd3;

@@ -9,9 +9,12 @@
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </head>
 <body>
+    <div id="header">
+        <i class="bi bi-brightness-high-fill" id="toggleDark"></i>
+    </div>
     <div id="main">
         <div>
-            <i class="bi bi-brightness-high-fill" id="toggleDark"></i>
+            
             <h1>Upload MP3 or Download from YouTube</h1>
             <form method="post" enctype="multipart/form-data" action="/upload">
                 <input type="file" name="file">
