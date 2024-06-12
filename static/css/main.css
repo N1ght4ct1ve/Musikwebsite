@@ -27,21 +27,24 @@ body {
 }
 
 .current_song_parent {
-    border-radius: 20px;
-    background-color: var(--queue-color);
-    padding: 20px;
+    border: 1px solid black;
+    margin: 1rem;
+    padding: 2rem 2rem;
+    text-align: center;
 }
 
 .current_song_cover {
-    border-style: solid;
-    border-radius: 20px;
-    background-color: rgb(255, 255, 255);
+    display: inline-block;
+    border: 1px solid red;
+    padding: 1rem 1rem;
+    vertical-align: middle;
 }
 
 .current_song_info {
-    border-radius: 20px;
-    background-color: var(--queue-color);
-    padding: 20px;
+    display: inline-block;
+    border: 1px solid red;
+    padding: 1rem 1rem;
+    vertical-align: middle;
 }
 
 
