@@ -1,0 +1,11 @@
+body {
+    background-color: black;
+}
+
+#main {
+ border-style: solid;
+ border-radius: 10px;
+ box-shadow: 0 30px 40px rgba(255, 255, 255, 0.1);
+ background-color: white;
+ padding: 10px;
+}

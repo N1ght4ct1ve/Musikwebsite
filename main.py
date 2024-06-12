@@ -19,72 +19,11 @@ current_song = {"title": "", "cover": ""}
 stop_event = Event()
 skip_event = Event()
 
-html_template = '''
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MP3 Upload and YouTube Downloader</title>
-    <script>
-        function refreshQueue() {
-            fetch('/queue')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('queue').innerHTML = data.queue.map(song => '<li>' + song + '</li>').join('');
-                document.getElementById('current_song').innerHTML = 'Current song: ' + data.current_song.title;
-                document.getElementById('cover').src = data.current_song.cover;
-            });
-        }
-        setInterval(refreshQueue, 5000);
-        window.onload = refreshQueue;
-        
-        function sendCommand(command) {
-            fetch('/' + command, {method: 'POST'})
-            .then(() => refreshQueue());
-        }
-    </script>
-</head>
-<body>
-    <h1>Upload MP3 or Download from YouTube</h1>
-    <form method="post" enctype="multipart/form-data" action="/upload">
-        <input type="file" name="file">
-        <input type="submit" value="Upload MP3">
-    </form>
-    <form method="post" action="/download">
-        <input type="text" name="url" placeholder="YouTube URL">
-        <input type="submit" value="Download from YouTube">
-    </form>
-    <h2>Queue</h2>
-    <ul id="queue">
-        {% for song in playback_queue %}
-        <li>{{ song }}</li>
-        {% endfor %}
-    </ul>
-    <h2>Select a song from the uploads</h2>
-    <form method="post" action="/enqueue">
-        <select name="file">
-            {% for file in files %}
-            <option value="{{ file }}">{{ file }}</option>
-            {% endfor %}
-        </select>
-        <input type="submit" value="Add to Queue">
-    </form>
-    <h2 id="current_song">Current song: {{ current_song.title }}</h2>
-    <img id="cover" src="{{ current_song.cover }}" alt="Cover" width="200">
-    <div>
-        <button onclick="sendCommand('start')">Start</button>
-        <button onclick="sendCommand('stop')">Stop</button>
-        <button onclick="sendCommand('skip')">Skip</button>
-    </div>
-</body>
-</html>
-'''
 
 @app.route('/')
 def index():
     files = os.listdir(UPLOAD_FOLDER)
-    return render_template_string(html_template, playback_queue=playback_queue, files=files, current_song=current_song)
+    return render_template_string("index.html", playback_queue=playback_queue, files=files, current_song=current_song)
 
 @app.route('/queue')
 def get_queue():
