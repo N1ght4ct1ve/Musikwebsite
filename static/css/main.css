@@ -27,6 +27,19 @@ body {
     background-color: black;
 }
 
+.button {
+    background-color: #ff0000;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    display: inline-block;
+    font-size: 10px;
+}
+
+option {
+    color: var(--text-color);
+}
+
 h1 {
     color: var(--text-color);
 }
