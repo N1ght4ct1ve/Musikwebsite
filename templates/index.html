@@ -18,8 +18,8 @@
             
             <h1>Upload MP3 or Download from YouTube</h1>
             <form method="post" enctype="multipart/form-data" action="/upload">
-                <input class="upload" type="file" name="file">
-                <button type="button" class="button" id="uploadButton"><i class="fa fa-upload"></i></button>
+                <input class="upload" type="file" name="file"><i class="fa fa-upload"></i></input>
+                <input class="button" type="submit" value="Upload MP3">
             </form>
             <form method="post" action="/download">
                 <input class="inputfield" type="text" name="url" placeholder="YouTube URL">
