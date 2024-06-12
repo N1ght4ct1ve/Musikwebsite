@@ -22,10 +22,9 @@ body {
 }
 
 #main {
- border-style: solid;
- border-radius: 20px;
- background-color: var(--main-color);
- padding: 10px;
+    border-radius: 20px;
+    background-color: var(--main-color);
+    padding: 10px;
 }
 
 #queue {
@@ -43,7 +42,7 @@ body {
 .button {
     background-color: #c39bd3;
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
     color: black;
     padding: 15px 32px;
     text-align: center;
