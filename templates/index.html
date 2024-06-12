@@ -17,12 +17,12 @@
             
             <h1>Upload MP3 or Download from YouTube</h1>
             <form method="post" enctype="multipart/form-data" action="/upload">
-                <input type="file" name="file">
-                <input class="button" type="submit" value="Upload MP3">
+                <input class="inputfield" type="file" name="file">
+                <button class="button" type="submit" value="Upload MP3"></button>
             </form>
             <form method="post" action="/download">
-                <input type="text" name="url" placeholder="YouTube URL">
-                <input class="button" type="submit" value="Download from YouTube">
+                <input class="inputfield" type="text" name="url" placeholder="YouTube URL">
+                <button class="button" type="submit" value="Download from YouTube"></button>
             </form>
         </div>
         <div class="current_song_parent">
