@@ -23,7 +23,7 @@ skip_event = Event()
 @app.route('/')
 def index():
     files = os.listdir(UPLOAD_FOLDER)
-    return render_template_string("index.html", playback_queue=playback_queue, files=files, current_song=current_song)
+    return render_template("index.html", playback_queue=playback_queue, files=files, current_song=current_song)
 
 @app.route('/queue')
 def get_queue():
