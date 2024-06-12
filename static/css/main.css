@@ -9,6 +9,11 @@
     --main-color:#2a2a2a;
     --text-color: #ffffff;
 }
+[data-theme="light"] {
+    --bg-color: #4d4a4a;
+    --main-color:#2a2a2a;
+    --text-color: #ffffff;
+}
 
 body {
     background-color: var(--bg-color);
@@ -18,13 +23,15 @@ body {
  border-style: solid;
  border-radius: 10px;
  background-color: var(--main-color);
+
+
  padding: 10px;
 }
 
 #cover {
     border-style: solid;
     border-radius: 10px;
-    background-color: black;
+    background-color: rgb(255, 255, 255);
 }
 
 h1 {

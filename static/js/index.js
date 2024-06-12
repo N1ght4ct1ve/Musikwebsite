@@ -16,26 +16,36 @@ function sendCommand(command) {
 }
 
 /////
+var theme = "light";
 
-function detectColorScheme(){
-    var theme="light";    //default to light
+function detectColorScheme() {
+    // Default to light
 
-    //local storage is used to override OS theme settings
-    if(localStorage.getItem("theme")){
-        if(localStorage.getItem("theme") == "dark"){
-            var theme = "dark";
-        }
-    } else if(!window.matchMedia) {
-        //matchMedia method not supported
-        return false;
-    } else if(window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        //OS theme setting detected as dark
-        var theme = "dark";
+    // Local storage is used to override OS theme settings
+    if (localStorage.getItem("theme")) {
+        theme = localStorage.getItem("theme");
+    } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        theme = "dark";
     }
 
-    //dark theme preferred, set document with a `data-theme` attribute
-    if (theme=="dark") {
-         document.documentElement.setAttribute("data-theme", "dark");
+    // Dark theme preferred, set document with a `data-theme` attribute
+    if (theme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+        document.documentElement.setAttribute("data-theme", "light");
     }
 }
 detectColorScheme();
+
+/* LIGHT/DARK MODE toggle */
+document.getElementById("toggleDark").onclick = function () {
+    if (theme === "light") {
+        document.documentElement.setAttribute("data-theme", "dark");
+        theme = "dark";
+        localStorage.setItem("theme", "dark");
+    } else {
+        document.documentElement.setAttribute("data-theme", "light");
+        theme = "light";
+        localStorage.setItem("theme", "light");
+    }
+}
