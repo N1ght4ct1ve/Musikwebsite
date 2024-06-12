@@ -5,24 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MP3 Upload and YouTube Downloader</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
-    <script>
-        function refreshQueue() {
-            fetch('/queue')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('queue').innerHTML = data.queue.map(song => '<li>' + song + '</li>').join('');
-                document.getElementById('current_song').innerHTML = 'Current song: ' + data.current_song.title;
-                document.getElementById('cover').src = data.current_song.cover;
-            });
-        }
-        setInterval(refreshQueue, 5000);
-        window.onload = refreshQueue;
-        
-        function sendCommand(command) {
-            fetch('/' + command, {method: 'POST'})
-            .then(() => refreshQueue());
-        }
-    </script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </head>
 <body>
     <h1>Upload MP3 or Download from YouTube</h1>
