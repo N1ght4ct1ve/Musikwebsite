@@ -4,6 +4,12 @@
     --text-color: #000000;
 }
 
+[data-theme="light"] {
+    --bg-color: #ffffff;
+    --main-color:#2a2a2a;
+    --text-color: #000000;
+}
+
 [data-theme="dark"] {
     --bg-color: #000000;
     --main-color:#2a2a2a;
@@ -28,12 +34,17 @@ body {
 }
 
 .button {
-    background-color: #ff0000;
-    border-radius: 10px;
-    color: white;
+    background-color: #c39bd3;
+    border: none;
+    border-radius: 5px;
+    color: black;
+    padding: 15px 32px;
     text-align: center;
+    text-decoration: none;
     display: inline-block;
-    font-size: 10px;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
 }
 
 option {
