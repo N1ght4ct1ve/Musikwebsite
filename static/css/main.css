@@ -4,21 +4,15 @@
     --text-color: #000000;
 }
 
-[data-theme="light"] {
-    --bg-color: #ffffff;
-    --main-color:#2a2a2a;
-    --text-color: #000000;
-}
-
 [data-theme="dark"] {
     --bg-color: #000000;
     --main-color:#2a2a2a;
     --text-color: #ffffff;
 }
 [data-theme="light"] {
-    --bg-color: #4d4a4a;
-    --main-color:#2a2a2a;
-    --text-color: #ffffff;
+    --bg-color: #a6a6a6;
+    --main-color:#cfcfcf;
+    --text-color: #000000;
 }
 
 body {
