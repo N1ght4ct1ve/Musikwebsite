@@ -68,27 +68,22 @@ body {
 
 .current_song_cover {
     height: 150px;
-    width: 150px; 
+    width: 150px;
     border-radius: 20px;
     display: inline-block;
     background-color: #000000;
     background-size: cover;
     vertical-align: middle;
-    
+    overflow: hidden;
 }
 
 .current_song_cover img {
     height: 100%;
     width: 100%;
-    object-fit: contain;
+    object-fit: cover;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     border-radius: 20px;
 }
-
-img.rounded-corners {
-    border-radius: 20px;
-}  
-  
 
 .current_song_info {
     display: inline-block;
