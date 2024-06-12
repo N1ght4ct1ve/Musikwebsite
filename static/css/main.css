@@ -81,7 +81,8 @@ body {
     height: 100%;
     width: 100%;
     object-fit: contain;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    border-radius: 20px;
 }
 
 img.rounded-corners {
