@@ -22,11 +22,15 @@
                 <input class="button" type="submit" value="Download from YouTube">
             </form>
         </div>
-
-        <div id="current_song">
-            <h2 id="current_song">Current song: {{ current_song.title }}</h2>
-            <img id="cover" src="{{ current_song.cover }}" alt="Cover" width="200">
+        <div class="current_song_parent">
+            <div class="current_song_cover">
+                <img id="cover" src="{{ current_song.cover }}" alt="Cover" width="200">
+            </div>
+            <div class="current_song_info">
+                <h2 id="current_song">Current song: {{ current_song.title }}</h2>
+            </div>
         </div>
+        
         <ul id="queue">
             {% for song in playback_queue %}
             <li>{{ song }}</li>

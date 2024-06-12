@@ -14,7 +14,6 @@
     --main-color:#cfcfcf;
     --queue-color: #ffffff;
     --text-color: #000000;
-    
 }
 
 body {
@@ -27,17 +26,36 @@ body {
     padding: 10px;
 }
 
-#queue {
+.current_song_parent {
     border-radius: 20px;
     background-color: var(--queue-color);
-    padding: 10px;
+    padding: 20px;
 }
 
-#cover {
+.current_song_cover {
     border-style: solid;
     border-radius: 20px;
     background-color: rgb(255, 255, 255);
 }
+
+.current_song_info {
+    border-radius: 20px;
+    background-color: var(--queue-color);
+    padding: 20px;
+}
+
+
+#queue {
+    border-radius: 20px;
+    background-color: var(--queue-color);
+    padding: 25px;
+
+    max-height: 20%;
+    overflow: hidden;
+    overflow-y:scroll;
+}
+
+
 
 .button {
     background-color: #c39bd3;
