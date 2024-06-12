@@ -12,11 +12,11 @@
         <h1>Upload MP3 or Download from YouTube</h1>
         <form method="post" enctype="multipart/form-data" action="/upload">
             <input type="file" name="file">
-            <input type="submit" value="Upload MP3">
+            <input class="button" type="submit" value="Upload MP3">
         </form>
         <form method="post" action="/download">
             <input type="text" name="url" placeholder="YouTube URL">
-            <input type="submit" value="Download from YouTube">
+            <input class="button" type="submit" value="Download from YouTube">
         </form>
         <h2>Queue</h2>
         <ul id="queue">
@@ -40,9 +40,9 @@
         </div>
         
         <div>
-            <button onclick="sendCommand('start')">Start</button>
-            <button onclick="sendCommand('stop')">Stop</button>
-            <button onclick="sendCommand('skip')">Skip</button>
+            <button class="button" onclick="sendCommand('start')">Start</button>
+            <button class="button" onclick="sendCommand('stop')">Stop</button>
+            <button class="button" onclick="sendCommand('skip')">Skip</button>
         </div>
     </div>
 </body>
