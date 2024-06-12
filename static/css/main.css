@@ -68,6 +68,8 @@ body {
 }
 
 .current_song_cover {
+    height: 150px;
+    width: 150px; 
     border-radius: 20px;
     display: inline-block;
     background-color: #000000;
