@@ -48,7 +48,6 @@
 body {
     background-color: var(--bg-color);
 }
-/*
 
 #header {
     position: relative;
@@ -58,11 +57,10 @@ body {
     background-color: var(--main-color);
     padding: 10px;
 
-    margin: 4px;
+    margin: 2px;
 
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-    */
 
 #main {
     border-radius: 20px;
@@ -96,6 +94,7 @@ body {
     height: 100%;
     width: 100%;
     object-fit: contain;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   }
   
 
