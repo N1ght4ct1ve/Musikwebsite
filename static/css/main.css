@@ -1,11 +1,35 @@
+:root {
+    --bg-color: #ffffff;
+    --main-color: #ffffff;
+    --text-color: #000000;
+}
+
+[data-theme="dark"] {
+    --bg-color: #000000;
+    --main-color:#565656;
+    --text-color: #ffffff;
+}
+
 body {
-    background-color: black;
+    background-color: var(--bg-color);
 }
 
 #main {
  border-style: solid;
  border-radius: 10px;
- box-shadow: 0 30px 40px rgba(255, 255, 255, 0.1);
- background-color: white;
+ background-color: var(--main-color);
  padding: 10px;
 }
+
+#cover {
+    border-style: solid;
+    border-radius: 10px;
+    background-color: black;
+}
+
+h1 {
+    color: var(--text-color);
+}
+
+
+
