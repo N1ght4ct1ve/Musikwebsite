@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template_string, redirect, url_for, jsonify
+from flask import Flask, request, render_template, redirect, url_for, jsonify
 import yt_dlp as youtube_dl
 import os
 from threading import Thread, Event
