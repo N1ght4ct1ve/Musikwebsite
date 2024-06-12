@@ -30,8 +30,16 @@ skip_event = Event()
 @app.route('/')
 def index():
     # Listet alle Dateien im Upload-Ordner auf und rendert das Index-Template
-    files = os.listdir(SONG_FOLDER)
-    return render_template("index.html", playback_queue=playback_queue, files=files, current_song=current_song)
+    mp3_files = []
+    for file in os.listdir(SONG_FOLDER):
+        # Prüfen, ob die Dateiendung ".mp3" ist
+        if file.endswith(".mp3"):
+            mp3_files.append(file)
+        mp3_files = sorted(mp3_files)
+        
+
+
+    return render_template("index.html", playback_queue=playback_queue, files=mp3_files, current_song=current_song)
 
 # Definiert die Route zum Abrufen der Warteschlange
 @app.route('/queue')
@@ -120,6 +128,11 @@ def skip():
     skip_event.set()
     return '', 204
 
+# Definiert eine benutzerdefinierte Fehlerseite für den HTTP-Statuscode 404
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 # Funktion zur Wiedergabe von Audio
 def play_audio():
     while True:
@@ -159,6 +172,10 @@ def play_audio():
 
 # Startet die Flask-App und den Audio-Player-Thread
 if __name__ == '__main__':
+    # Definiert den Audio-Player-Thread
     player_thread = Thread(target=play_audio, daemon=True)
     player_thread.start()
+    
+    # Startet die Flask-App
+    app.register_error_handler(404, page_not_found)  # Registriert die benutzerdefinierte Fehlerseite
     app.run(host='0.0.0.0', port=5000)
