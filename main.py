@@ -312,5 +312,8 @@ if __name__ == '__main__':
     player_thread.start()
     
     # Startet die Flask-App
+    app.config.update(
+            TEMPLATES_AUTO_RELOAD = True
+    )
     app.register_error_handler(404, page_not_found)  # Registriert die benutzerdefinierte Fehlerseite
     app.run(host='0.0.0.0', port=5000)
