@@ -34,7 +34,7 @@ def download_from_youtube(url):
 
 
 # Beispielaufruf:
-test = download_from_youtube('https://www.youtube.com/watch?v=AN1RJF55NXI&pp=ygUXbmV2ZXIgZmFkZSBhd2F5IHNhbXVyYWk%3D')
+test = download_from_youtube('https://youtu.be/iWpCdUQLWwU')
 
 print(50*"-")
 print(test)

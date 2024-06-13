@@ -259,3 +259,8 @@ li {
 .hidden {
     display: none;
 }
+
+
+.theme-switch__container{
+    float: right;
+}

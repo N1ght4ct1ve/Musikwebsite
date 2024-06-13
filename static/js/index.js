@@ -28,44 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // Event listener for the "test" button
-    const testButton = document.getElementById('test');
-    if (testButton) {
-        testButton.addEventListener('click', () => {
-            console.log('Button with id "test" clicked!');
-            // Perform any actions you want when the button is clicked
-        });
-    } else {
-        console.error('Button with id "test" not found.');
-    }
-
-    // Event listener for the "dark" button
-    const darkButton = document.getElementById('dark');
-    if (darkButton) {
-        darkButton.addEventListener('click', () => {
-            console.log('Button with id "dark" clicked!');
-            // Perform any actions you want when the button is clicked
-            localStorage.setItem("mode", "dark");
-            document.documentElement.setAttribute('data-theme', 'dark');
-
-        });
-    } else {
-        console.error('Button with id "dark" not found.');
-    }
-
-    // Event listener for the "light" button
-    const lightButton = document.getElementById('light');
-    if (lightButton) {
-        lightButton.addEventListener('click', () => {
-            console.log('Button with id "light" clicked!');
-            // Perform any actions you want when the button is clicked
-            localStorage.setItem("mode", "light");
-            document.documentElement.setAttribute('data-theme', 'light');
-        });
-    } else {
-        console.error('Button with id "light" not found.');
-    }
-
     // Event listener for the file button to trigger file input
     const fileButton = document.getElementById('fileButton');
     if (fileButton) {
@@ -93,10 +55,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-// Set theme on page load based on localStorage
-const savedTheme = localStorage.getItem("mode");
-if (savedTheme === "dark") {
-    document.documentElement.setAttribute('data-theme', 'dark');
-} else {
-    document.documentElement.setAttribute('data-theme', 'light');
-}
+
+const checkbox = document.querySelector(".theme-switch__checkbox");
+
+    checkbox.addEventListener('change', function() {
+        if(this.checked) {
+            // Dark mode
+            localStorage.setItem("mode", "dark");
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            // Light mode
+            localStorage.setItem("mode", "light");
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    });
+
+     // On page load or refresh, check localStorage to set the theme
+     const currentMode = localStorage.getItem("mode");
+     if(currentMode === "dark") {
+         checkbox.checked = true;
+         document.documentElement.setAttribute('data-theme', 'dark');
+     } else {
+         checkbox.checked = false;
+         document.documentElement.setAttribute('data-theme', 'light');
+     }
