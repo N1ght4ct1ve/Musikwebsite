@@ -195,19 +195,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 }) 
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Add click event listener to the button with id "test"
-    const testButton = document.getElementById('test');
 
-    if (testButton) {
-        testButton.addEventListener('click', () => {
-            console.log('Button with id "test" clicked!');
-            // Perform any actions you want when the button is clicked
-        });
-    } else {
-        console.error('Button with id "test" not found.');
-    }
-});
+
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // Add click event listener to the button with id "test"
@@ -223,17 +214,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Add click event listener to the button with id "test"
-    const testButton = document.getElementById('test');
+    // Add click event listener to the button with id "dark"
+    const darkButton = document.getElementById('dark');
 
-    if (testButton) {
-        testButton.addEventListener('click', () => {
-            console.log('Button with id "test" clicked!');
+    if (darkButton) {
+        darkButton.addEventListener('click', () => {
+            console.log('Button with id "dark" clicked!');
             // Perform any actions you want when the button is clicked
         });
     } else {
-        console.error('Button with id "test" not found.');
+        console.error('Button with id "dark" not found.');
+    }
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Add click event listener to the button with id "light"
+    const lightButton = document.getElementById('light');
+
+    if (lightButton) {
+        lightButton.addEventListener('click', () => {
+            console.log('Button with id "light" clicked!');
+            // Perform any actions you want when the button is clicked
+        });
+    } else {
+        console.error('Button with id "light" not found.');
     }
 });
