@@ -38,6 +38,7 @@
 
 /* The button used to open the sidebar */
 .openbtn {
+    font-size: 20px;
     border-radius: 5px;
     cursor: pointer;
     color: white;
