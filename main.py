@@ -123,7 +123,6 @@ def index():
         if file.endswith(".mp3"):
             mp3_files.append(file)
         mp3_files = sorted(mp3_files)
-        
     return render_template("index.html", playback_queue=playback_queue, files=mp3_files, current_song=current_song)
 
 
@@ -313,7 +312,7 @@ if __name__ == '__main__':
     
     # Startet die Flask-App
     app.config.update(
-            TEMPLATES_AUTO_RELOAD = True
+        TEMPLATES_AUTO_RELOAD = True
     )
     app.register_error_handler(404, page_not_found)  # Registriert die benutzerdefinierte Fehlerseite
     app.run(host='0.0.0.0', port=5000)
