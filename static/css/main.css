@@ -59,6 +59,7 @@ body {
 
 
 
+
 #main {
     border-radius: 20px;
     background-color: var(--main-color);
@@ -111,6 +112,13 @@ body {
     max-height: 20%;
     overflow: hidden;
     overflow-y:scroll;
+}
+
+#toggleDark {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .button {
