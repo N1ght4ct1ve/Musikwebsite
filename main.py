@@ -313,4 +313,4 @@ if __name__ == '__main__':
     
     # Startet die Flask-App
     app.register_error_handler(404, page_not_found)  # Registriert die benutzerdefinierte Fehlerseite
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=9000)

@@ -70,11 +70,35 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+
+/* SONG CARD */
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+
 .current_song_parent {
-    border: 1px solid black;
-    margin: 1rem;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     padding: 2rem 2rem;
     text-align: center;
+
+    background: linear-gradient(45deg, #2c003e, #4b0082, #800080, #2c003e);
+    background-size: 300% 300%;
+    animation: gradientAnimation 10s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: Arial, sans-serif;
 }
 
 .current_song_cover {
@@ -106,6 +130,7 @@ body {
 
 #queue {
     border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     background-color: var(--queue-color);
     padding: 25px;
 
