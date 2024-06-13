@@ -19,11 +19,16 @@
 
 
     <div id="root">
-    <div id="main">
+    <div id="header" class="main">
+    
         <button class="openbtn" onclick="toggleNav()">&#9776;</button>
         <i class="bi bi-brightness-high-fill" id="toggleDark"></i>
+        <button id="dark" type="button"  class="button">dark</button>
+        <button id="light"type="button" class="button">light</button>
+        <button id="test" type="button"  class="button">test</button>
+
     </div>
-    <div id="main">
+    <div id="main2" class="main">
         <div>
             <h1>Upload MP3 or Download from YouTube</h1>
             <form id="uploadForm" method="post" enctype="multipart/form-data" action="/upload">

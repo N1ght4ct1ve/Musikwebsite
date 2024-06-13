@@ -60,7 +60,7 @@ body {
 
 
 
-#main {
+.main {
     border-radius: 20px;
     background-color: var(--main-color);
     padding: 10px;
