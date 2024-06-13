@@ -1,0 +1,92 @@
+.curtain {
+    margin: 0 auto;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    
+    &__wrapper {
+      width: 100%;
+      height: 100%;
+      
+      input[type=checkbox] {
+        position: absolute;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        z-index: 100;
+        opacity: 0;
+        top: 0;
+        left: 0;
+        
+        // When the checkbox is checked...
+        &:checked {
+          
+          // Slide the first panel
+          &~div.curtain__panel--left {
+            transform: translateX(0);
+          }
+          
+          // Slide the second panel
+          &~div.curtain__panel--right {
+            transform: translateX(0);
+          }
+  
+          // Disable scrolling on body and html
+          &~body, &~html {
+            overflow: hidden;
+          }
+        }
+      }
+    }
+    
+    &__panel {
+      display: flex;
+      align-items: center;
+      background: orange;
+      color: #fff;
+      float: left;
+      position: relative;
+      width: 50%;
+      height: 100vh;
+      transition: all 1s ease-out;
+      z-index: 2;
+      &--left {
+        justify-content: flex-end;
+        transform: translateX(-100%);
+      }
+      &--right {
+        justify-content: flex-start;
+        transform: translateX(100%);
+      }
+    }
+    
+    &__content {
+      align-items: center;
+      background: #333;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      justify-content: center;
+      padding: 1rem 0;
+      position: absolute;
+      text-align: center;
+      z-index: 1;
+      width: 100%;
+      
+      img {
+        width: 20%;
+      }
+    }
+  }
+  
+  // Global styles to handle disabling/enabling scrolling
+  body, html {
+    overflow: auto; // Enable scrolling by default
+    
+    input[type=checkbox]:checked ~ body,
+    input[type=checkbox]:checked ~ html {
+      overflow: hidden; // Disable scrolling when curtain is open
+    }
+  }
+  
