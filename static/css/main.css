@@ -54,7 +54,7 @@ body {
 }
 
 #root {
-    transition: margin-left .3s; /* Transition-Effekt */
+    transition: margin-left .5s; /* Transition-Effekt */
 }
 
 
