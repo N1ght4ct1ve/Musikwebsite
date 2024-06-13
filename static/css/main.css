@@ -115,10 +115,8 @@ body {
 }
 
 #toggleDark {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+    margin-left: auto; 
+    margin-right: 0;
 }
 
 .button {
