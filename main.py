@@ -260,7 +260,7 @@ def play_audio():
             # Setzt den Titel des aktuellen Lieds
             current_song["title"] = os.path.basename(file_path)[:-4]
             
-            
+
             # Extrahiert das Cover-Bild, falls vorhanden
             audio = MP3(file_path, ID3=ID3)
             if audio.tags.getall("APIC"):
@@ -273,7 +273,7 @@ def play_audio():
                         current_song["cover"] = cover_path
                         break
             else:
-                current_song["cover"] = ""  # Setzt das Cover auf leer, wenn keins vorhanden ist
+                current_song["cover"] = "static/temp/default.png"  # Setzt das Cover auf leer, wenn keins vorhanden ist
             
             # Lädt das Lied als AudioSegment
             song = AudioSegment.from_mp3(file_path)
@@ -313,4 +313,4 @@ if __name__ == '__main__':
     
     # Startet die Flask-App
     app.register_error_handler(404, page_not_found)  # Registriert die benutzerdefinierte Fehlerseite
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=5000)
