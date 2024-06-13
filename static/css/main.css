@@ -31,18 +31,34 @@
     --purple-900: #581c87;
     /* Schwarz */
     --black: #000000;
+
+    --fade-color1:#470063;
+    --fade-color2:#390061;
+    --fade-color3:#840084;
+    --fade-color4:#490763;
 }
 
 [data-theme="dark"] {
     --bg-color: #000000;
     --main-color:#2a2a2a;
     --text-color: #ffffff;
+    --queue-color:#4b5563;
+
+    --fade-color1:#470063;
+    --fade-color2:#390061;
+    --fade-color3:#840084;
+    --fade-color4:#490763;
 }
 [data-theme="light"] {
     --bg-color: #a6a6a6;
     --main-color:#cfcfcf;
     --queue-color: #ffffff;
     --text-color: #000000;
+
+    --fade-color1:#006308;
+    --fade-color2:#005f61;
+    --fade-color3:#1f8400;
+    --fade-color4:#072d63;
 }
 
 
@@ -91,7 +107,7 @@ body {
     padding: 2rem 2rem;
     text-align: center;
 
-    background: linear-gradient(45deg, #470063, #390061, #840084, #490763);
+    background: linear-gradient(45deg, var(--fade-color1), var(--fade-color2), var(--fade-color3), var(--fade-color4));
     background-size: 300% 300%;
     animation: gradientAnimation 10s ease infinite;
     display: flex;
