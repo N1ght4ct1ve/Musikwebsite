@@ -45,7 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
         darkButton.addEventListener('click', () => {
             console.log('Button with id "dark" clicked!');
             // Perform any actions you want when the button is clicked
+            localStorage.setItem("mode", "dark");
             document.documentElement.setAttribute('data-theme', 'dark');
+
         });
     } else {
         console.error('Button with id "dark" not found.');
@@ -57,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lightButton.addEventListener('click', () => {
             console.log('Button with id "light" clicked!');
             // Perform any actions you want when the button is clicked
+            localStorage.setItem("mode", "light");
             document.documentElement.setAttribute('data-theme', 'light');
         });
     } else {
@@ -89,3 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Theme toggle functionality (already present in your code)
 
 });
+
+// Set theme on page load based on localStorage
+const savedTheme = localStorage.getItem("mode");
+if (savedTheme === "dark") {
+    document.documentElement.setAttribute('data-theme', 'dark');
+} else {
+    document.documentElement.setAttribute('data-theme', 'light');
+}
