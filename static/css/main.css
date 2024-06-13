@@ -91,7 +91,7 @@ body {
     padding: 2rem 2rem;
     text-align: center;
 
-    background: linear-gradient(45deg, #2c003e, #4b0082, #800080, #2c003e);
+    background: linear-gradient(45deg, #2c003e, #2a0047, #350035, #22002f);
     background-size: 300% 300%;
     animation: gradientAnimation 10s ease infinite;
     display: flex;
@@ -105,6 +105,7 @@ body {
     height: 150px;
     width: 150px;
     border-radius: 20px;
+    box-shadow: 0 0 20px rgba(188, 0, 236, 0.6);
     display: inline-block;
     background-color: #000000;
     background-size: cover;
