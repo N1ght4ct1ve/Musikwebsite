@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 - Seite nicht gefunden</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f5f5;
             margin: 0;
             padding: 0;
@@ -18,30 +18,49 @@
 
         .container {
             text-align: center;
+            background-color: #e5d1f0; /* Hellviolett */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            color: #333;
+            color: #6a0dad; /* Dunkles Violett */
             font-size: 48px;
             margin-bottom: 20px;
         }
 
         p {
-            color: #666;
+            color: #7b6491; /* Mittelviolett */
             font-size: 18px;
+            margin-bottom: 20px;
+            line-height: 1.6;
         }
 
         a {
-            color: #007bff;
+            color: #a16ed8; /* Helleres Violett */
             text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #874ebb; /* Dunkleres Violett beim Hover */
+        }
+
+        .emoji {
+            font-size: 24px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="emoji">😕</div>
         <h1>404 - Seite nicht gefunden</h1>
-        <p>Tschuldischung, die von Ihnen angeforderte Seite konnte nicht gefunden werden.</p>
-        <p>Bitte überprüfen Sie die URL auf Tippfehler oder gehen Sie zur <a href="/">Startseite</a>.</p>
+        <p>Oh nein! Es scheint, als hätte sich die Seite versteckt.</p>
+        <p>Vielleicht gab es einen Tippfehler in der URL oder die Seite wurde entfernt.</p>
+        <p>Keine Sorge! Sie können zur <a href="/">Startseite</a> zurückkehren und die Reise fortsetzen.</p>
     </div>
 </body>
 </html>
