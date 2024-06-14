@@ -48,7 +48,7 @@ function sendCommand(command) {
         })
         .catch((error) => {
             console.error('Error:', error);
-        });s
+        });
     } else if (command === 'pause') {
         fetch('/pause', {
             method: 'POST',

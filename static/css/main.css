@@ -190,7 +190,6 @@ body {
     height: 20vh;
     max-height: 10%;
     overflow: hidden;
-    overflow-y:scroll;
 }
 
 .song-item {
