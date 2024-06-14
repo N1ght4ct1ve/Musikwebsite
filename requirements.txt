@@ -1,6 +1,6 @@
 Flask
 yt-dlp
 pydub
-simpleaudio
+python-vlc
 mutagen
 Pillow

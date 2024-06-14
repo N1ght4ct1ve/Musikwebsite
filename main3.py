@@ -1,15 +1,17 @@
 # Importiert notwendige Module und Pakete
-from flask import Flask, request, render_template, redirect, url_for, jsonify
-import yt_dlp as youtube_dl
 import os
 import re
-from threading import Thread, Event
-from queue import Queue
-import vlc_player
+import vlc_player # Eigene Funktion :D
+from PIL import Image
+#from queue import Queue
+import yt_dlp as youtube_dl
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC
-import traceback
-from PIL import Image
+from threading import Thread, Event
+from flask import Flask, request, render_template, redirect, url_for, jsonify
+
+# import traceback
+
 
 # Initialisiert die Flask-App
 app = Flask(__name__)
@@ -18,25 +20,65 @@ app = Flask(__name__)
 SONG_FOLDER = 'music/'
 TEMP_IMG = 'static/temp/'
 WORDS_TO_REMOVE = ['official video', 'lyric video', 'audio', 'music video']
-
+current_song = {"title": "", "cover": ""}
+current_queue = []
 
 if not os.path.exists(SONG_FOLDER):
     os.makedirs(SONG_FOLDER)
 
-# Initialisiert eine Warteschlange für Dateien, eine Wiedergabeliste und Variablen für das aktuelle Lied
-queue = Queue()
-playback_queue = []
-current_song = {"title": "", "cover": ""}
+
 
 
 """ ---- Hilfsfunktionen ---- """
-
 def add_to_queue(title):
     player.add_to_queue(title)
+    update_song()
+    update_queue()
 
+
+def update_queue():
+    global current_queue
+    current_queue = player.get_queue()
     print(50*"-")
-    print(player.get_queue()) # Kann iwann weg
+    print(current_queue)
     print(50*"-")
+
+def update_song(song = None):
+    global current_song
+    if song:
+        current_song["title"] = song
+        update_cover(song)
+
+    else:
+        current_song["title"] = "No song yet"
+        current_song["cover"] = "static/temp/default.png"
+
+    
+    print(50*"-")
+    print(current_song)
+    print(50*"-")
+
+def update_cover(song):
+    global current_song
+    # Extrahiert das Cover-Bild, falls vorhanden
+    audio = MP3(f"{SONG_FOLDER}/{song}.mp3", ID3=ID3)
+    if audio.tags.getall("APIC"):
+        for tag in audio.tags.getall("APIC"):
+            if tag.type == 3:  # Vorderes Cover
+                cover_path = os.path.join(TEMP_IMG, f"{current_song['title'][:-4]}.jpg")
+                try:
+                    with open(cover_path, 'wb') as img:
+                        img.write(tag.data)
+                    adjust_thumbnail(cover_path, cover_path)  # Passt das Thumbnail an
+                    current_song["cover"] = cover_path
+                    break
+                except:
+                    current_song["cover"] = "static/temp/default.png"  # Setzt das Cover auf leer, wenn keins vorhanden ist
+                    break
+    else:
+        current_song["cover"] = "static/temp/default.png"  # Setzt das Cover auf leer, wenn keins vorhanden ist
+    
+
 
 # Hilfsfunktion zur Bereinigung des Titels (Noch unnötig)
 def clean_title(title):
@@ -117,7 +159,8 @@ def index():
         if file.endswith(".mp3"):
             mp3_files.append(file[:-4])
         mp3_files = sorted(mp3_files)
-    return render_template("index.html", playback_queue=playback_queue, files=mp3_files, current_song=current_song)
+
+    return render_template("index.html", playback_queue=current_queue, files=mp3_files, current_song=current_song)
 
 
 # Definiert die Route zum Abrufen der Warteschlange
@@ -125,7 +168,7 @@ def index():
 def get_queue():
     queue = player.get_queue()
     # Gibt die aktuelle Wiedergabeliste und das aktuelle Lied als JSON zurück
-    return jsonify({"queue": queue, "current_song": current_song})
+    return jsonify({"queue": current_queue, "current_song": current_song})
 
 
 @app.route('/upload', methods=['POST'])
@@ -161,7 +204,8 @@ def enqueue_file():
     print(request)
     file = request.data.decode('utf-8')
     print(file)
-    player.add_to_queue(file)
+    add_to_queue(file)
+    
     return redirect(url_for('index'))
 
 # Definiert die Route zum Starten der Wiedergabe
@@ -198,7 +242,9 @@ def skip():
     print(50*"-")
     print("Hab Skip Command bekommen")
     print(50*"-")
+    update_song(player.get_queue()[0])
     player.skip()
+    update_queue()
 
     return '', 204
 
@@ -209,18 +255,11 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 
-# Funktion zur Wiedergabe von Audio
-def play_audio():
-    
-    print("Ich tu so, als ob ich Audio abspiele! :D ")
-       
-
-
 # Startet die Flask-App und den Audio-Player-Thread
 if __name__ == '__main__':
     # Definiert den Audio-Player-Thread
     player = vlc_player.MusicPlayer(SONG_FOLDER)
-
+    update_queue()
     
     # Startet die Flask-App
     app.config.update(

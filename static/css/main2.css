@@ -160,7 +160,7 @@ body {
     border-radius: 20px;
     box-shadow: 0 0 20px rgba(188, 0, 236, 0.66);
     display: inline-block;
-    background-color: #000000;
+    /* background-color: #000000; */
     background-size: cover;
     overflow: hidden;
 }
