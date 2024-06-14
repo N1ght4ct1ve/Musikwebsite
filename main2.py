@@ -12,6 +12,8 @@ from mutagen.id3 import ID3, APIC
 import traceback
 from PIL import Image
 
+import music_player
+
 # Initialisiert die Flask-App
 app = Flask(__name__)
 
@@ -129,6 +131,7 @@ def index():
 # Definiert die Route zum Abrufen der Warteschlange
 @app.route('/queue')
 def get_queue():
+    playback_queue = player.view_queue()
     # Gibt die aktuelle Wiedergabeliste und das aktuelle Lied als JSON zurück
     return jsonify({"queue": playback_queue, "current_song": current_song})
 
@@ -168,39 +171,57 @@ def enqueue_file():
     file = request.data.decode('utf-8')
     print(file)
     if file:
-        file_path = os.path.join(SONG_FOLDER, file)
-        queue.put(file_path)
-        playback_queue.append(file)
+        player.add_to_queue(f"{SONG_FOLDER}/{file}")
+        player.play()
+        # file_path = os.path.join(SONG_FOLDER, file)
+        # queue.put(file_path)
+        # playback_queue.append(file)
     return redirect(url_for('index'))
 
 # Definiert die Route zum Starten der Wiedergabe
 @app.route('/start', methods=['POST'])
 def start():
-    stop_event.clear()
-    skip_event.clear()
-    if not player_thread.is_alive():
-        print("Dead!")
-        player_thread.start()
+    print(50*"-")
+    print("Hab Start Command bekommen")
+    print(50*"-")
+
+
+
     return '', 204
 
 # Definiert die Route zum Starten der Wiedergabe
 @app.route('/resume', methods=['POST'])
 def resume():
-    stop_event.clear()
-    skip_event.clear()
+    print(50*"-")
+    print("Hab Resume Command bekommen")
+    print(50*"-")
+
+    player.unpause()
+    
+
     return '', 204
 
 # Definiert die Route zum Stoppen der Wiedergabe
 @app.route('/pause', methods=['POST'])
 def stop():
-    stop_event.set()
+    print(50*"-")
+    print("Hab Stop Command bekommen")
+    print(50*"-")
+
+    player.pause()
+
     return '', 204
 
 
 # Definiert die Route zum Überspringen des aktuellen Liedes
 @app.route('/skip', methods=['POST'])
 def skip():
-    skip_event.set()
+    print(50*"-")
+    print("Hab Skip Command bekommen")
+    print(50*"-")
+
+    player.skip()
+
     return '', 204
 
 
@@ -210,68 +231,17 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 
-# Funktion zur Wiedergabe von Audio
 def play_audio():
-    while True:
-        stop_event.clear()  # Setzt das Stop-Event zurück
-        skip_event.clear()  # Setzt das Skip-Event zurück
-        file_path = queue.get()  # Holt den Dateipfad aus der Warteschlange
-        if file_path:
-            # Entfernt das aktuelle Lied aus der Wiedergabeliste
-            playback_queue.remove(os.path.basename(file_path))
-            # Setzt den Titel des aktuellen Lieds
-            current_song["title"] = os.path.basename(file_path)[:-4]
-            
-
-            # Extrahiert das Cover-Bild, falls vorhanden
-            audio = MP3(file_path, ID3=ID3)
-            if audio.tags.getall("APIC"):
-                for tag in audio.tags.getall("APIC"):
-                    if tag.type == 3:  # Vorderes Cover
-                        cover_path = os.path.join(TEMP_IMG, f"{current_song['title'][:-4]}.jpg")
-                        with open(cover_path, 'wb') as img:
-                            img.write(tag.data)
-                        adjust_thumbnail(cover_path, cover_path)  # Passt das Thumbnail an
-                        current_song["cover"] = cover_path
-                        break
-            else:
-                current_song["cover"] = "static/temp/default.png"  # Setzt das Cover auf leer, wenn keins vorhanden ist
-            
-            # Lädt das Lied als AudioSegment
-            song = AudioSegment.from_mp3(file_path)
-            
-            try:
-                # Spielt das Lied mit simpleaudio ab
-                play_obj = sa.play_buffer(
-                    song.raw_data,
-                    num_channels=song.channels,
-                    bytes_per_sample=song.sample_width,
-                    sample_rate=song.frame_rate
-                )
-                
-                # Überprüft, ob das Lied noch abgespielt wird
-                while play_obj.is_playing():
-                    if stop_event.is_set():
-                        play_obj.stop()  # Stoppt die Wiedergabe, wenn das Stop-Event gesetzt ist
-                        #return
-                    if skip_event.is_set():
-                        play_obj.stop()  # Stoppt die Wiedergabe, wenn das Skip-Event gesetzt ist
-                        break
-                play_obj.wait_done()  # Wartet, bis die Wiedergabe vollständig abgeschlossen ist
-            
-            except Exception as e:
-                # Behandelt auftretende Fehler bei der Wiedergabe
-                print(f"Fehler beim Abspielen von '{current_song['title']}': {e}")
-                traceback.print_exc()  # Protokolliert die Stack-Trace-Informationen für die Fehlerverfolgung
-                continue  # Setzt die Wiedergabe des nächsten Lieds fort
-
+    print("Ich tue so, als ob ich Audio abspiele")
 
 
 # Startet die Flask-App und den Audio-Player-Thread
 if __name__ == '__main__':
-    # Definiert den Audio-Player-Thread
-    player_thread = Thread(target=play_audio, daemon=True)
-    player_thread.start()
+    # Added Audioplayer
+    player = music_player.MusicPlayer()
+    #player.add_to_queue("./music/KRAFTKLUB - Blaues Licht.mp3")
+    #player.play()
+
     
     # Startet die Flask-App
     app.config.update(
