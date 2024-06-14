@@ -1,3 +1,5 @@
+//ADD TO QUEUE
+
 const songOverview = document.getElementById('songs');
 
 if (songOverview) {
@@ -25,4 +27,30 @@ if (songOverview) {
     });
 } else {
     console.error('Element with id "songs" not found.');
+}
+
+//SKIP QUEUE
+
+function sendCommand(command) {
+    const queue = document.getElementById('queue');
+    const songs = queue.getElementsByTagName('li');
+    
+    if (songs.length > 0 && command === 'skip') {
+        fetch('/skip', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            // Optionale Aktion nach erfolgreichem POST-Request
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    } else {
+        console.log('Keine Songs in der Warteschlange');
+    }
 }
