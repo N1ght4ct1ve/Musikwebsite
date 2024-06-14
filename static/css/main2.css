@@ -111,7 +111,7 @@ body {
     display: flex;
     gap: var(--gaps); 
     flex-direction: row;
-    max-height: 60vh;
+    max-height: 80vh;
 }
 
 
@@ -171,7 +171,6 @@ body {
     background-image: url("/static/temp/default.png"); 
     background-size: contain;
     background-repeat: no-repeat;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     border-radius: 20px;
     box-shadow: 0 0 20px #000000 inset;
 }
@@ -184,6 +183,10 @@ body {
     max-width: 50%;
     text-wrap: wrap;
 }
+.current_song_info:has(h3:empty) {
+    display: none;
+  }
+
 
 
 .queue {
@@ -198,6 +201,10 @@ body {
 }
 
 .queue_box {
+    display: flex;
+    gap: var(--gaps); 
+    flex-direction: column;
+
     background: var(--main-color);
     flex-grow: 6;
     border-radius: 20px;
