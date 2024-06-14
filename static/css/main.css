@@ -41,9 +41,11 @@
 
 [data-theme="dark"] {
     --bg-color: #000000;
-    --main-color:#2a2a2a;
+    --main-color:#000000;
     --text-color: #ffffff;
     --queue-color:#4b5563;
+
+    --button-color: #8a0097;
 
     --fade-color1:#470063;
     --fade-color2:#390061;
@@ -55,6 +57,8 @@
     --main-color:#cfcfcf;
     --queue-color: #ffffff;
     --text-color: #000000;
+
+    --button-color: #1f8400;
 
     --fade-color1:#006308;
     --fade-color2:#005f61;
@@ -79,12 +83,14 @@ body {
 
 .main {
     border-radius: 20px;
-    background-color: var(--main-color);
-    padding: 10px;
+    box-shadow: 0 0 10px var(--fade-color1);
 
-    margin: 2px;
-
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 5px;
+    margin: 10px;
+    background: var(--main-color);
+    align-items: center;
+    color: white;
+    font-family: Arial, sans-serif;
 }
 
 
@@ -107,7 +113,7 @@ body {
     padding: 2rem 2rem;
     text-align: center;
 
-    background: #000000;
+    background: var(--main-color);
     background-size: 300% 300%;
     animation: gradientAnimation 10s ease infinite;
     display: flex;
@@ -167,7 +173,8 @@ body {
 #queue {
     border-radius: 20px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    background-color: var(--queue-color);
+    
+    background: linear-gradient(45deg, var(--fade-color2) 60%, var(--fade-color3) 100%);
     padding: 25px;
 
     max-height: 20%;
@@ -178,7 +185,7 @@ body {
 .songlist {
     border-radius: 20px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    background-color: var(--queue-color);
+    background: linear-gradient(45deg, var(--fade-color2) 70%, var(--fade-color3) 100%);
     padding: 10px 25px;
     height: 50px;
     max-height: 10%;
@@ -236,7 +243,7 @@ body {
 }
 
 .button1 {
-    background-color: #8a0097;
+    background-color: var(--button-color);
     border: none;
     border-radius: 20px;
     color: black;
