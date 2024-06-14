@@ -2,22 +2,40 @@ import vlc
 import time
 
 class MusicPlayer:
-    def __init__(self, media_path):
+    def __init__(self, song_path):
         # Create a VLC media player object
         self.media_player = vlc.MediaPlayer()
-        
-        # Create a media object
-        self.media = vlc.Media(media_path)
-        
-        # Set the media to the media player
-        self.media_player.set_media(self.media)
-        
+        # Create a list to hold the queue of media paths
+        self.queue = []
         # Set initial volume
         self.media_player.audio_set_volume(100)
-        
+        self.path = song_path
+
     def play(self):
         """Start playing the media."""
+        if not self.media_player.is_playing() and self.queue:
+            self.play_next()
+        else:
+            self.media_player.play()
+
+    def add_to_queue(self, song):
+        """Add a song to the queue."""
+        self.queue.append(song)
+    
+    def play_next(self):
+        """Play the next media in the queue."""
+        if self.queue:
+            song = self.queue.pop(0)
+            self.play_media(song)
+        else:
+            print("Queue is empty!")
+
+    def play_media(self, song):
+        """Play a specific media file."""
+        media = vlc.Media(f"{self.path}/{song}.mp3")
+        self.media_player.set_media(media)
         self.media_player.play()
+
     
     def pause(self):
         """Pause the media."""
@@ -46,29 +64,57 @@ class MusicPlayer:
     def is_playing(self):
         """Check if the media is playing."""
         return self.media_player.is_playing()
+    
+    def print_queue(self):
+        """Print the current queue of media files."""
+        if self.queue:
+            print("Current queue:")
+            for idx, media_path in enumerate(self.queue):
+                print(f"{idx + 1}. {media_path}")
+        else:
+            print("Queue is empty!")
+
+    def get_queue(self):
+        """Print the current queue of media files."""
+        if self.queue:
+            return self.queue
+        else:
+            return []
+        
+
+    def skip(self):
+        """Skip the current media and play the next in the queue."""
+        if self.media_player.is_playing():
+            self.stop()  # Stop current media
+            self.play_next()  # Play next in queue
+        elif self.queue:
+            self.play_next()  # Play next in queue directly if paused or stopped
+
+
 
 # Example usage
 if __name__ == "__main__":
-    # Create an instance of the MusicPlayer with the path to the media file
-    player = MusicPlayer("./KRAFTKLUB - Blaues Licht.mp3")
+    # Create an instance of the MusicPlayer
+    player = MusicPlayer("./music")
     
-    # Start playing the media
+    # Add media files to the queue
+    player.add_to_queue("In Your Hands")
+    player.add_to_queue("Cowboys On Acid")
+    
+    # Print the current queue
+    player.print_queue()
+    
+    # Start playing the media from the queue
     player.play()
     
-    # Wait for 5 seconds
-    time.sleep(5)
+
+
+    # Play the next media in the queue
+    # player.play_next()
     
-    # Pause the media
-    player.pause()
-    
-    # Wait for 2 seconds
-    time.sleep(2)
-    
-    # Resume playing the media
-    player.pause()
-    
-    # Wait for another 5 seconds
-    time.sleep(5)
-    
-    # Stop the media
-    player.stop()
+    # Print the current queue again
+    player.print_queue()
+
+    while True:
+        print("Is playing...")
+        time.sleep(2)

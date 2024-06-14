@@ -5,7 +5,6 @@ import os
 import re
 from threading import Thread, Event
 from queue import Queue
-from pydub import AudioSegment
 import vlc_player
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC
@@ -16,32 +15,27 @@ from PIL import Image
 app = Flask(__name__)
 
 # Legt den Ordner für Music fest und erstellt ihn, falls er nicht existiert
-SONG_FOLDER = 'music'
+SONG_FOLDER = 'music/'
 TEMP_IMG = 'static/temp/'
+WORDS_TO_REMOVE = ['official video', 'lyric video', 'audio', 'music video']
+
+
 if not os.path.exists(SONG_FOLDER):
     os.makedirs(SONG_FOLDER)
-
-# Liste von Wörtern, die aus dem Titel entfernt werden sollen (Noch unnötig)
-WORDS_TO_REMOVE = ['official video', 'lyric video', 'audio', 'music video']
 
 # Initialisiert eine Warteschlange für Dateien, eine Wiedergabeliste und Variablen für das aktuelle Lied
 queue = Queue()
 playback_queue = []
 current_song = {"title": "", "cover": ""}
 
-# Initialisiert Events zum Stoppen und Überspringen von Liedern
-stop_event = Event()
-skip_event = Event()
-
 
 """ ---- Hilfsfunktionen ---- """
 
 def add_to_queue(title):
-    file_path = os.path.join(SONG_FOLDER, f"{title}.mp3")
-    queue.put(file_path)
-    playback_queue.append(f"{title}.mp3")
+    player.add_to_queue(title)
+
     print(50*"-")
-    print(playback_queue)
+    print(player.get_queue()) # Kann iwann weg
     print(50*"-")
 
 # Hilfsfunktion zur Bereinigung des Titels (Noch unnötig)
@@ -121,7 +115,7 @@ def index():
     for file in os.listdir(SONG_FOLDER):
         # Prüfen, ob die Dateiendung ".mp3" ist
         if file.endswith(".mp3"):
-            mp3_files.append(file)
+            mp3_files.append(file[:-4])
         mp3_files = sorted(mp3_files)
     return render_template("index.html", playback_queue=playback_queue, files=mp3_files, current_song=current_song)
 
@@ -129,8 +123,9 @@ def index():
 # Definiert die Route zum Abrufen der Warteschlange
 @app.route('/queue')
 def get_queue():
+    queue = player.get_queue()
     # Gibt die aktuelle Wiedergabeliste und das aktuelle Lied als JSON zurück
-    return jsonify({"queue": playback_queue, "current_song": current_song})
+    return jsonify({"queue": queue, "current_song": current_song})
 
 
 @app.route('/upload', methods=['POST'])
@@ -139,8 +134,7 @@ def upload_file():
     if file and file.filename.endswith('.mp3'):
         file_path = os.path.join(SONG_FOLDER, file.filename)
         file.save(file_path)
-        queue.put(file_path)
-        playback_queue.append(file.filename)
+
     else:
         #return jsonify({"error": "Invalid file format"}), 400
         return render_template('error.html', error_message="Ungültiges Dateiformat. Bitte laden Sie nur MP3-Dateien hoch."), 400
@@ -167,40 +161,45 @@ def enqueue_file():
     print(request)
     file = request.data.decode('utf-8')
     print(file)
-    if file:
-        file_path = os.path.join(SONG_FOLDER, file)
-        queue.put(file_path)
-        playback_queue.append(file)
+    player.add_to_queue(file)
     return redirect(url_for('index'))
 
 # Definiert die Route zum Starten der Wiedergabe
 @app.route('/start', methods=['POST'])
 def start():
-    stop_event.clear()
-    skip_event.clear()
-    if not player_thread.is_alive():
-        print("Dead!")
-        player_thread.start()
+    print(50*"-")
+    print("Hab Start Command bekommen")
+    print(50*"-")
+    player.play()
     return '', 204
 
 # Definiert die Route zum Starten der Wiedergabe
 @app.route('/resume', methods=['POST'])
 def resume():
-    stop_event.clear()
-    skip_event.clear()
+    print(50*"-")
+    print("Hab Resume Command bekommen")
+    print(50*"-")
+    player.pause()
     return '', 204
 
 # Definiert die Route zum Stoppen der Wiedergabe
 @app.route('/pause', methods=['POST'])
 def stop():
-    stop_event.set()
+    print(50*"-")
+    print("Hab Pause Command bekommen")
+    print(50*"-")
+    player.pause()
     return '', 204
 
 
 # Definiert die Route zum Überspringen des aktuellen Liedes
 @app.route('/skip', methods=['POST'])
 def skip():
-    skip_event.set()
+    print(50*"-")
+    print("Hab Skip Command bekommen")
+    print(50*"-")
+    player.skip()
+
     return '', 204
 
 
@@ -213,14 +212,14 @@ def page_not_found(e):
 # Funktion zur Wiedergabe von Audio
 def play_audio():
     
-    while True:
+    print("Ich tu so, als ob ich Audio abspiele! :D ")
        
 
 
 # Startet die Flask-App und den Audio-Player-Thread
 if __name__ == '__main__':
     # Definiert den Audio-Player-Thread
-    player = vlc_player.MusicPlayer()
+    player = vlc_player.MusicPlayer(SONG_FOLDER)
 
     
     # Startet die Flask-App
