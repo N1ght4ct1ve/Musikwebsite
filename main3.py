@@ -6,7 +6,7 @@ import re
 from threading import Thread, Event
 from queue import Queue
 from pydub import AudioSegment
-import simpleaudio as sa
+import vlc_player
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC
 import traceback
@@ -212,71 +212,16 @@ def page_not_found(e):
 
 # Funktion zur Wiedergabe von Audio
 def play_audio():
+    
     while True:
-        stop_event.clear()  # Setzt das Stop-Event zurück
-        skip_event.clear()  # Setzt das Skip-Event zurück
-        file_path = queue.get()  # Holt den Dateipfad aus der Warteschlange
-        if file_path:
-            # Entfernt das aktuelle Lied aus der Wiedergabeliste
-            playback_queue.remove(os.path.basename(file_path))
-            # Setzt den Titel des aktuellen Lieds
-            current_song["title"] = os.path.basename(file_path)[:-4]
-            
-
-            # Extrahiert das Cover-Bild, falls vorhanden
-            audio = MP3(file_path, ID3=ID3)
-            if audio.tags.getall("APIC"):
-                for tag in audio.tags.getall("APIC"):
-                    if tag.type == 3:  # Vorderes Cover
-                        cover_path = os.path.join(TEMP_IMG, f"{current_song['title'][:-4]}.jpg")
-                        try:
-                            with open(cover_path, 'wb') as img:
-                                img.write(tag.data)
-                            adjust_thumbnail(cover_path, cover_path)  # Passt das Thumbnail an
-                            current_song["cover"] = cover_path
-                            break
-                        except:
-                            current_song["cover"] = "static/temp/default.png"  # Setzt das Cover auf leer, wenn keins vorhanden ist
-                            break
-            else:
-                current_song["cover"] = "static/temp/default.png"  # Setzt das Cover auf leer, wenn keins vorhanden ist
-            
-            # Lädt das Lied als AudioSegment
-            song = AudioSegment.from_mp3(file_path)
-            
-            try:
-                # Spielt das Lied mit simpleaudio ab
-                play_obj = sa.play_buffer(
-                    song.raw_data,
-                    num_channels=song.channels,
-                    bytes_per_sample=song.sample_width,
-                    sample_rate=song.frame_rate
-                )
-                
-                # Überprüft, ob das Lied noch abgespielt wird
-                while play_obj.is_playing():
-                    if stop_event.is_set():
-                        play_obj.stop()  # Stoppt die Wiedergabe, wenn das Stop-Event gesetzt ist
-                        # play_obj.pause()
-                        return
-                    if skip_event.is_set():
-                        play_obj.stop()  # Stoppt die Wiedergabe, wenn das Skip-Event gesetzt ist
-                        break
-                play_obj.wait_done()  # Wartet, bis die Wiedergabe vollständig abgeschlossen ist
-            
-            except Exception as e:
-                # Behandelt auftretende Fehler bei der Wiedergabe
-                print(f"Fehler beim Abspielen von '{current_song['title']}': {e}")
-                traceback.print_exc()  # Protokolliert die Stack-Trace-Informationen für die Fehlerverfolgung
-                continue  # Setzt die Wiedergabe des nächsten Lieds fort
-
+       
 
 
 # Startet die Flask-App und den Audio-Player-Thread
 if __name__ == '__main__':
     # Definiert den Audio-Player-Thread
-    player_thread = Thread(target=play_audio, daemon=True)
-    player_thread.start()
+    player = vlc_player.MusicPlayer()
+
     
     # Startet die Flask-App
     app.config.update(
