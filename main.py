@@ -164,7 +164,9 @@ def download_file():
 # Definiert die Route zum Einreihen von Dateien in die Wiedergabeliste
 @app.route('/enqueue', methods=['POST'])
 def enqueue_file():
-    file = request.form['file']
+    print(request)
+    file = request.data.decode('utf-8')
+    print(file)
     if file:
         file_path = os.path.join(SONG_FOLDER, file)
         queue.put(file_path)
@@ -177,11 +179,19 @@ def start():
     stop_event.clear()
     skip_event.clear()
     if not player_thread.is_alive():
+        print("Dead!")
         player_thread.start()
     return '', 204
 
+# Definiert die Route zum Starten der Wiedergabe
+@app.route('/resume', methods=['POST'])
+def resume():
+    stop_event.clear()
+    skip_event.clear()
+    return '', 204
+
 # Definiert die Route zum Stoppen der Wiedergabe
-@app.route('/stop', methods=['POST'])
+@app.route('/pause', methods=['POST'])
 def stop():
     stop_event.set()
     return '', 204
@@ -290,7 +300,7 @@ def play_audio():
                 while play_obj.is_playing():
                     if stop_event.is_set():
                         play_obj.stop()  # Stoppt die Wiedergabe, wenn das Stop-Event gesetzt ist
-                        return
+                        #return
                     if skip_event.is_set():
                         play_obj.stop()  # Stoppt die Wiedergabe, wenn das Skip-Event gesetzt ist
                         break
