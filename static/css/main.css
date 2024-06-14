@@ -175,6 +175,46 @@ body {
     overflow-y:scroll;
 }
 
+.songlist {
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    background-color: var(--queue-color);
+    padding: 10px 25px;
+    height: 50px;
+    max-height: 10%;
+    overflow: hidden;
+    overflow-y:scroll;
+}
+
+.song-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.song-button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+
+/* .songlist::after {
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    background-color: var(--queue-color);
+    padding: 10px 25px;
+    height: 200px;
+    max-height: 10%;
+    overflow: hidden;
+    overflow-y:scroll;
+} */
+
+
 #toggleDark {
     margin-right: auto; 
     margin-left: 0;

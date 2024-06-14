@@ -82,11 +82,14 @@
             {% endfor %}
         </ul>
 
-        <ul id="songs">
+        <ul class="songlist" id="songs">
           {% for file in files %}
-          <li>{{ file }}</li>
+          <div class="song-item">
+            <span>{{ file }}</span>
+            <button class="song-button" data-title="{{ file }}">Post Song</button>
+        </div>
           {% endfor %}
-      </ul>
+        </ul>
         <h2>Select a song from the uploads</h2>
         <form method="post" action="/enqueue">
             <select class="optionselect" name="file">
@@ -103,6 +106,7 @@
     </div>
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
     <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/addsong.js') }}"></script>
 
 </body>
 </html>

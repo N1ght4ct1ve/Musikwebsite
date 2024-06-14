@@ -51,6 +51,31 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('File input with id "fileInput" not found.');
     }
 
+    const songOverview = document.getElementById('songs');
+    if (songOverview) {
+        // Setze die ursprüngliche Höhe des songOverview-Elements
+        const originalHeight = "50px";
+    
+        songOverview.addEventListener('click', () => {
+            const numberOfSongs = songOverview.getElementsByClassName('song-item').length;
+            const heightPerSong = 50; // Höhe eines einzelnen Liedes in Pixeln (anpassen nach Bedarf)
+            const maxHeight = 80 * window.innerHeight / 100; // 80vh in Pixel umgerechnet
+            const newHeight = Math.min(numberOfSongs * heightPerSong, maxHeight);
+            
+            songOverview.style.height = `${newHeight}px`;
+            songOverview.style.transition = ".5s";
+        });
+    
+        // window.addEventListener('scroll', () => {
+        //     // Setze die Höhe zurück auf die ursprüngliche Höhe, wenn die Seite scrollt
+        //     songOverview.style.height = originalHeight;
+        // });
+    } else {
+        console.error('File input with id "fileInput" not found.');
+    }
+
+
+
     // Theme toggle functionality (already present in your code)
 
 });
