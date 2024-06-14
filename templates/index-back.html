@@ -58,14 +58,14 @@
                 <input class="button1" type="submit" value="Download from YouTube">
             </form>
         </div>
-    <div class="parent">
+
     <div class="current_song_view">
       <div class="current_song_card">
         <div class="current_song_cover">
-            <img id="cover" class="rounded-corners" src="{{ current_song.cover }}"width="200">
+            <img id="cover" class="rounded-corners" src="{{ current_song.cover }}" alt="Cover" width="200">
         </div>
         <div class="current_song_info">
-            <h3 id="current_song">{{ current_song.title }}</h3>
+            <h2 id="current_song">{{ current_song.title }}</h2>
         </div>
       </div>
       <div class="current_song_buttons">
@@ -80,14 +80,16 @@
         </button>
       </div>
     </div>
-      <div id="main3" class="queue_box">
-        <ul id="queue" class="queue">
+    <div id="main3" class="main">
+      
+        
+        <ul id="queue">
             {% for song in playback_queue %}
             <li>{{ song }}</li>
             {% endfor %}
         </ul>
 
-        <ul id="songs" class="songlist">
+        <ul class="songlist" id="songs">
           {% for file in files %}
           <div class="song-item">
             <span>{{ file }}</span>
@@ -95,7 +97,7 @@
         </div>
           {% endfor %}
         </ul>
-      </div>
+
 <!--         
         <h2>Select a song from the uploads</h2>
         <form method="post" action="/enqueue">

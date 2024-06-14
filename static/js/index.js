@@ -1,5 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded and parsed');
+    document.querySelectorAll('img').forEach(function(img){
+        img.onerror = function(){
+            // this.style.display='none';
+            this.style.backgroundImage = 'static/temp/default.png'
+        };
+     })
 
     // Function to refresh queue data
     function refreshQueue() {
@@ -19,14 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
     refreshQueue();
     setInterval(refreshQueue, 5000);
 
-    // Function to send commands
-    function sendCommand(command) {
-        fetch('/' + command, { method: 'POST' })
-            .then(() => refreshQueue())
-            .catch(error => {
-                console.error('Error sending command:', error);
-            });
-    }
 
     // Event listener for the file button to trigger file input
     const fileButton = document.getElementById('fileButton');
@@ -51,17 +49,17 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('File input with id "fileInput" not found.');
     }
 
-    const songOverview = document.getElementById('songs');
+    const songOverview = document.getElementById('queue_box');
     if (songOverview) {
         // Setze die ursprüngliche Höhe des songOverview-Elements
         const originalHeight = "50px";
     
         songOverview.addEventListener('click', () => {
             const numberOfSongs = songOverview.getElementsByClassName('song-item').length;
-            const heightPerSong = 50; // Höhe eines einzelnen Liedes in Pixeln (anpassen nach Bedarf)
+            const heightPerSong = 60; // Höhe eines einzelnen Liedes in Pixeln (anpassen nach Bedarf)
             const maxHeight = 80 * window.innerHeight / 100; // 80vh in Pixel umgerechnet
-            const newHeight = Math.min(numberOfSongs * heightPerSong, maxHeight);
-            
+            // const newHeight = Math.min(numberOfSongs * heightPerSong, maxHeight);
+            var newHeight = numberOfSongs * heightPerSong;
             songOverview.style.height = `${newHeight}px`;
             songOverview.style.transition = ".5s";
         });
