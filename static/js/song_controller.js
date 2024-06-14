@@ -34,8 +34,8 @@ if (songOverview) {
 function sendCommand(command) {
     const queue = document.getElementById('queue');
     const songs = queue.getElementsByTagName('li');
-    if (command === 'start') {
-        fetch('/start', {
+    if (command === 'resume') {
+        fetch('/resume', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
