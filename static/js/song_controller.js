@@ -34,7 +34,22 @@ if (songOverview) {
 function sendCommand(command) {
     const queue = document.getElementById('queue');
     const songs = queue.getElementsByTagName('li');
-    if (command === 'pause') {
+    if (command === 'start') {
+        fetch('/start', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            // Optionale Aktion nach erfolgreichem POST-Request
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });s
+    } else if (command === 'pause') {
         fetch('/pause', {
             method: 'POST',
             headers: {
