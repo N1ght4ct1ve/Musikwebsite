@@ -30,9 +30,9 @@ if not os.path.exists(SONG_FOLDER):
 
 
 """ ---- Hilfsfunktionen ---- """
+
 def add_to_queue(title):
     player.add_to_queue(title)
-    update_song()
     update_queue()
 
 
@@ -45,10 +45,16 @@ def update_queue():
 
 def update_song(song = None):
     global current_song
-    if song:
+    neuer_song = player.current_song()
+    if neuer_song:
+            print("-"*300)
+            print(neuer_song)
+            print("-"*300)
+            current_song["title"] = neuer_song
+            update_cover(neuer_song)
+    elif song:
         current_song["title"] = song
         update_cover(song)
-
     else:
         current_song["title"] = "No song yet"
         current_song["cover"] = "static/temp/default.png"
@@ -65,7 +71,7 @@ def update_cover(song):
     if audio.tags.getall("APIC"):
         for tag in audio.tags.getall("APIC"):
             if tag.type == 3:  # Vorderes Cover
-                cover_path = os.path.join(TEMP_IMG, f"{current_song['title'][:-4]}.jpg")
+                cover_path = os.path.join(TEMP_IMG, f"{current_song['title']}.jpg")
                 try:
                     with open(cover_path, 'wb') as img:
                         img.write(tag.data)
@@ -159,7 +165,7 @@ def index():
         if file.endswith(".mp3"):
             mp3_files.append(file[:-4])
         mp3_files = sorted(mp3_files)
-
+    update_song()
     return render_template("index.html", playback_queue=current_queue, files=mp3_files, current_song=current_song)
 
 
@@ -167,6 +173,7 @@ def index():
 @app.route('/queue')
 def get_queue():
     queue = player.get_queue()
+    update_song()
     # Gibt die aktuelle Wiedergabeliste und das aktuelle Lied als JSON zurück
     return jsonify({"queue": current_queue, "current_song": current_song})
 
@@ -220,10 +227,16 @@ def start():
 # Definiert die Route zum Starten der Wiedergabe
 @app.route('/resume', methods=['POST'])
 def resume():
+    global current_queue
     print(50*"-")
     print("Hab Resume Command bekommen")
     print(50*"-")
-    player.pause()
+    
+    print(f"Aktueller song: {player.current_song()}")
+    update_queue()
+    if current_queue:
+        update_song(current_queue[0])
+        player.play()
     return '', 204
 
 # Definiert die Route zum Stoppen der Wiedergabe
@@ -234,6 +247,26 @@ def stop():
     print(50*"-")
     player.pause()
     return '', 204
+
+# Definiert die Route zur Lautstärkeänderung der Wiedergabe
+@app.route('/setvolume', methods=['POST'])
+def set_volume():
+    volume = request.data.decode('utf-8')
+    print(volume)
+    try: 
+        volume = int(volume)
+    except:
+        print("Irgendwer hat Volume verkackt")
+        volume = 100
+    if volume <= 150:
+        player.set_volume(volume)
+
+
+    print(50*"-")
+    print("Hab Lautstärke Command bekommen")
+    print(50*"-")
+    return '', 204
+
 
 
 # Definiert die Route zum Überspringen des aktuellen Liedes
