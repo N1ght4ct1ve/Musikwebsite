@@ -3,11 +3,11 @@ import os
 import re
 import vlc_player # Eigene Funktion :D
 from PIL import Image
-#from queue import Queue
+# from queue import Queue
 import yt_dlp as youtube_dl
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC
-from threading import Thread, Event
+# from threading import Thread, Event
 from flask import Flask, request, render_template, redirect, url_for, jsonify
 
 # import traceback
