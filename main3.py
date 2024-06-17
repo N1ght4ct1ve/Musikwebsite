@@ -47,9 +47,6 @@ def update_song(song = None):
     global current_song
     neuer_song = player.current_song()
     if neuer_song:
-            print("-"*300)
-            print(neuer_song)
-            print("-"*300)
             current_song["title"] = neuer_song
             update_cover(neuer_song)
     elif song:
@@ -60,9 +57,9 @@ def update_song(song = None):
         current_song["cover"] = "static/temp/default.png"
 
     
-    print(50*"-")
-    print(current_song)
-    print(50*"-")
+    # print(50*"-")
+    # print(current_song)
+    # print(50*"-")
 
 def update_cover(song):
     global current_song
@@ -208,20 +205,22 @@ def download_file():
 # Definiert die Route zum Einreihen von Dateien in die Wiedergabeliste
 @app.route('/enqueue', methods=['POST'])
 def enqueue_file():
-    print(request)
+    # print(request)
     file = request.data.decode('utf-8')
-    print(file)
+    print(f"Neuer Song für die Queue: {file}")
     add_to_queue(file)
     
     return redirect(url_for('index'))
 
+
 # Definiert die Route zum Starten der Wiedergabe
 @app.route('/start', methods=['POST'])
 def start():
+    #Geht zurzeit nicht (Unnötig bisher)
     print(50*"-")
-    print("Hab Start Command bekommen")
+    print(f"Hab Start Command bekommen \n braucht man grad aber nicht")
     print(50*"-")
-    player.play()
+    # player.play()
     return '', 204
 
 # Definiert die Route zum Starten der Wiedergabe

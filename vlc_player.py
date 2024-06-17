@@ -22,6 +22,7 @@ class MusicPlayer:
             self.player.play()
         else:
             print("Die Warteschlange ist leer.")
+            time.sleep(2)
 
     def play(self):
         self.play_next()
