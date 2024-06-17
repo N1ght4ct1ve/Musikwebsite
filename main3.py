@@ -4,11 +4,17 @@ import re
 import vlc_player # Eigene Funktion :D
 from PIL import Image
 # from queue import Queue
-import yt_dlp as youtube_dl
+#import yt_dlp as youtube_dl
+from youtube_downloader import download_from_youtube # Eigene Funktion :D
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC
 # from threading import Thread, Event
 from flask import Flask, request, render_template, redirect, url_for, jsonify
+
+
+
+# Beispiel-URL
+url = "https://www.youtube.com/watch?v=example"
 
 # import traceback
 
@@ -96,33 +102,6 @@ def clean_title_with_regex(title):
     cleaned_title = re.sub(r'\(.*?\)', '', title)
     return cleaned_title.strip()
 
-def download_from_youtube(url):
-    ydl_opts = {
-        'verbose': True,
-        'format': 'mp3/bestaudio/best',
-        'outtmpl': os.path.join(SONG_FOLDER, '%(title)s.%(ext)s'),
-        'writethumbnail': True,
-        'embedthumbnail': True,
-        'postprocessors': [{
-            'key': 'FFmpegMetadata',
-            'add_metadata': True,
-        },
-        {
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality' : 'best',
-        },
-        {
-            'key': 'EmbedThumbnail',
-        },
-        ]
-    }
-    
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=False)
-        ydl.download([url])
-    
-    return info
 
 
 # Funktion zum Anpassen des Seitenverhältnisses der Thumbnails
@@ -192,14 +171,28 @@ def upload_file():
 @app.route('/download', methods=['POST'])
 def download_file():
     url = request.form['url']
-    if url and ("youtube.com" or "youtu.be" in url):
-        info_dict = download_from_youtube(url)
-        title = info_dict.get('title', None)
-        add_to_queue(title)
+
+    if not url:
+        return render_template('error.html', error_message="Keine URL angegeben."), 400
+
+    if url and url.startswith("https://www.youtube.com/watch?v=") or url.startswith("https://youtu.be/") or url.startswith("https://music.youtube.com/watch?v="):
+        result = download_from_youtube(url, SONG_FOLDER)
+
+        if 'error' in result:
+            print(f"Fehler: {result['error']}")
+            return render_template('error.html', error_message=f"Fehler: {result['error']}"), 400
+        else:
+            print(f"Erfolgreich heruntergeladen: {result['title']}")
+            title = result.get('title', None)
+            add_to_queue(title)
+
     else:
         #return jsonify({"error": "Invalid URL"}), 400
         return render_template('error.html', error_message="Ungültige URL. Bitte geben Sie eine gültige YouTube-URL ein."), 400
     return redirect(url_for('index'))
+
+
+
 
 
 # Definiert die Route zum Einreihen von Dateien in die Wiedergabeliste
