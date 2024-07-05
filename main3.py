@@ -3,12 +3,18 @@ import os
 import re
 import vlc_player # Eigene Funktion :D
 from PIL import Image
-#from queue import Queue
-import yt_dlp as youtube_dl
+# from queue import Queue
+#import yt_dlp as youtube_dl
+from youtube_downloader import download_from_youtube # Eigene Funktion :D
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC
-from threading import Thread, Event
+# from threading import Thread, Event
 from flask import Flask, request, render_template, redirect, url_for, jsonify
+
+
+
+# Beispiel-URL
+url = "https://www.youtube.com/watch?v=example"
 
 # import traceback
 
@@ -30,9 +36,9 @@ if not os.path.exists(SONG_FOLDER):
 
 
 """ ---- Hilfsfunktionen ---- """
+
 def add_to_queue(title):
     player.add_to_queue(title)
-    update_song()
     update_queue()
 
 
@@ -45,18 +51,21 @@ def update_queue():
 
 def update_song(song = None):
     global current_song
-    if song:
+    neuer_song = player.current_song()
+    if neuer_song:
+            current_song["title"] = neuer_song
+            update_cover(neuer_song)
+    elif song:
         current_song["title"] = song
         update_cover(song)
-
     else:
         current_song["title"] = "No song yet"
         current_song["cover"] = "static/temp/default.png"
 
     
-    print(50*"-")
-    print(current_song)
-    print(50*"-")
+    # print(50*"-")
+    # print(current_song)
+    # print(50*"-")
 
 def update_cover(song):
     global current_song
@@ -65,7 +74,7 @@ def update_cover(song):
     if audio.tags.getall("APIC"):
         for tag in audio.tags.getall("APIC"):
             if tag.type == 3:  # Vorderes Cover
-                cover_path = os.path.join(TEMP_IMG, f"{current_song['title'][:-4]}.jpg")
+                cover_path = os.path.join(TEMP_IMG, f"{current_song['title']}.jpg")
                 try:
                     with open(cover_path, 'wb') as img:
                         img.write(tag.data)
@@ -93,33 +102,6 @@ def clean_title_with_regex(title):
     cleaned_title = re.sub(r'\(.*?\)', '', title)
     return cleaned_title.strip()
 
-def download_from_youtube(url):
-    ydl_opts = {
-        'verbose': True,
-        'format': 'mp3/bestaudio/best',
-        'outtmpl': os.path.join(SONG_FOLDER, '%(title)s.%(ext)s'),
-        'writethumbnail': True,
-        'embedthumbnail': True,
-        'postprocessors': [{
-            'key': 'FFmpegMetadata',
-            'add_metadata': True,
-        },
-        {
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality' : 'best',
-        },
-        {
-            'key': 'EmbedThumbnail',
-        },
-        ]
-    }
-    
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=False)
-        ydl.download([url])
-    
-    return info
 
 
 # Funktion zum Anpassen des Seitenverhältnisses der Thumbnails
@@ -159,7 +141,7 @@ def index():
         if file.endswith(".mp3"):
             mp3_files.append(file[:-4])
         mp3_files = sorted(mp3_files)
-
+    update_song()
     return render_template("index.html", playback_queue=current_queue, files=mp3_files, current_song=current_song)
 
 
@@ -167,6 +149,7 @@ def index():
 @app.route('/queue')
 def get_queue():
     queue = player.get_queue()
+    update_song()
     # Gibt die aktuelle Wiedergabeliste und das aktuelle Lied als JSON zurück
     return jsonify({"queue": current_queue, "current_song": current_song})
 
@@ -188,42 +171,64 @@ def upload_file():
 @app.route('/download', methods=['POST'])
 def download_file():
     url = request.form['url']
-    if url and ("youtube.com" or "youtu.be" in url):
-        info_dict = download_from_youtube(url)
-        title = info_dict.get('title', None)
-        add_to_queue(title)
+
+    if not url:
+        return render_template('error.html', error_message="Keine URL angegeben."), 400
+
+    if url and url.startswith("https://www.youtube.com/watch?v=") or url.startswith("https://youtu.be/") or url.startswith("https://music.youtube.com/watch?v="):
+        result = download_from_youtube(url, SONG_FOLDER)
+
+        if 'error' in result:
+            print(f"Fehler: {result['error']}")
+            return render_template('error.html', error_message=f"Fehler: {result['error']}"), 400
+        else:
+            print(f"Erfolgreich heruntergeladen: {result['title']}")
+            title = result.get('title', None)
+            add_to_queue(title)
+
     else:
         #return jsonify({"error": "Invalid URL"}), 400
         return render_template('error.html', error_message="Ungültige URL. Bitte geben Sie eine gültige YouTube-URL ein."), 400
     return redirect(url_for('index'))
 
 
+
+
+
 # Definiert die Route zum Einreihen von Dateien in die Wiedergabeliste
 @app.route('/enqueue', methods=['POST'])
 def enqueue_file():
-    print(request)
+    # print(request)
     file = request.data.decode('utf-8')
-    print(file)
+    print(f"Neuer Song für die Queue: {file}")
     add_to_queue(file)
     
     return redirect(url_for('index'))
 
+
 # Definiert die Route zum Starten der Wiedergabe
 @app.route('/start', methods=['POST'])
 def start():
+    #Geht zurzeit nicht (Unnötig bisher)
     print(50*"-")
-    print("Hab Start Command bekommen")
+    print(f"Hab Start Command bekommen \n braucht man grad aber nicht")
     print(50*"-")
-    player.play()
+    # player.play()
     return '', 204
 
 # Definiert die Route zum Starten der Wiedergabe
 @app.route('/resume', methods=['POST'])
 def resume():
+    global current_queue
     print(50*"-")
     print("Hab Resume Command bekommen")
     print(50*"-")
-    player.pause()
+    
+    print(f"Aktueller song: {player.current_song()}")
+    update_queue()
+    if current_queue:
+        update_song(current_queue[0])
+        player.play()
     return '', 204
 
 # Definiert die Route zum Stoppen der Wiedergabe
@@ -234,6 +239,26 @@ def stop():
     print(50*"-")
     player.pause()
     return '', 204
+
+# Definiert die Route zur Lautstärkeänderung der Wiedergabe
+@app.route('/setvolume', methods=['POST'])
+def set_volume():
+    volume = request.data.decode('utf-8')
+    print(volume)
+    try: 
+        volume = int(volume)
+    except:
+        print("Irgendwer hat Volume verkackt")
+        volume = 100
+    if volume <= 150:
+        player.set_volume(volume)
+
+
+    print(50*"-")
+    print("Hab Lautstärke Command bekommen")
+    print(50*"-")
+    return '', 204
+
 
 
 # Definiert die Route zum Überspringen des aktuellen Liedes

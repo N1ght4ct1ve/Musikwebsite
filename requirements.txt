@@ -1,6 +1,5 @@
 Flask
 yt-dlp
-pydub
 python-vlc
 python-dotenv
 mutagen
