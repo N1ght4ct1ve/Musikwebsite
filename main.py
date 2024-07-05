@@ -56,6 +56,15 @@ def update_song(song = None):
     # print(current_song)
     # print(50*"-")
 
+
+def on_song_end(song_title):
+    print(f"Callback: Lied beendet - {song_title}")
+
+def on_song_start(song_title):
+    print(f"Callback: Lied startet - {song_title}")
+
+
+
 def update_cover(song):
     global current_song
     # Extrahiert das Cover-Bild, falls vorhanden
@@ -275,6 +284,8 @@ if __name__ == '__main__':
     # Definiert den Audio-Player-Thread
     player = vlc_player.MusicPlayer(SONG_FOLDER)
     update_queue()
+    player.register_event("song_end", on_song_end)
+    player.register_event("song_start", on_song_start)
     
     # Startet die Flask-App
     app.config.update(

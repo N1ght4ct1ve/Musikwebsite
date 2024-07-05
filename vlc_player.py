@@ -14,7 +14,9 @@ class MusicPlayer:
         self.loop = False
         self.shuffle = False
         self.killed = False
-
+        self.event_manager = self.player.event_manager()
+        self.event_manager.event_attach(vlc.EventType.MediaPlayerEndReached, self.on_song_end)
+        self.event_callbacks = {"song_end": [], "song_start": []}
 
     def add_to_queue(self, file_path):
         self.queue.append(file_path)
@@ -29,10 +31,10 @@ class MusicPlayer:
                 random.shuffle(self.queue)
             next_media = self.queue.pop(0)
             self.the_current_song = next_media
-            self.current_media = self.instance.media_new(
-                f"{self.path}/{next_media}.mp3")
+            self.current_media = self.instance.media_new(f"{self.path}/{next_media}.mp3")
             self.player.set_media(self.current_media)
             self.player.play()
+            self._trigger_event("song_start", self.the_current_song)
         else:
             print("Die Warteschlange ist leer.")
             time.sleep(2)
@@ -49,6 +51,21 @@ class MusicPlayer:
             if self.killed:
                 print("Der Player wurde getötet!")
                 break
+            
+    def on_song_end(self, event):
+        print(f"Lied beendet: {self.the_current_song}")
+        self._trigger_event("song_end", self.the_current_song)
+
+
+    def _trigger_event(self, event_type, *args):
+        if event_type in self.event_callbacks:
+            for callback in self.event_callbacks[event_type]:
+                callback(*args)
+
+    def register_event(self, event_type, callback):
+        if event_type in self.event_callbacks:
+            self.event_callbacks[event_type].append(callback)
+
 
 
     def pause(self):
@@ -81,7 +98,10 @@ class MusicPlayer:
         return self.player.get_length()
     
     def get_percent(self):
-        return (self.get_current_time() / self.get_total_time())
+        total_time = self.get_total_time()
+        if total_time > 0:
+            return self.get_current_time() / total_time
+        return 0
     
     def toggle_loop(self):
         self.loop = not self.loop
