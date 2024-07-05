@@ -1,5 +1,6 @@
 import vlc
 import time
+import random
 
 
 class MusicPlayer:
@@ -10,12 +11,22 @@ class MusicPlayer:
         self.the_current_song = None
         self.current_media = None
         self.path = song_path
+        self.loop = False
+        self.shuffle = False
+        self.killed = False
+
 
     def add_to_queue(self, file_path):
         self.queue.append(file_path)
+    
+    def remove_from_queue(self, file_path):
+        if file_path in self.queue:
+            self.queue.remove(file_path)
 
     def play_next(self):
         if self.queue:
+            if self.shuffle and (not self.loop):
+                random.shuffle(self.queue)
             next_media = self.queue.pop(0)
             self.the_current_song = next_media
             self.current_media = self.instance.media_new(
@@ -31,8 +42,14 @@ class MusicPlayer:
         while True:
             state = self.player.get_state()
             if state == vlc.State.Ended:
+                if self.loop:
+                    self.queue.insert(0, self.the_current_song)
                 self.play_next()
             time.sleep(1)
+            if self.killed:
+                print("Der Player wurde getötet!")
+                break
+
 
     def pause(self):
         self.player.pause()
@@ -56,35 +73,62 @@ class MusicPlayer:
             # test = test.encode()
             return self.the_current_song
         return None
+    
+    def get_current_time(self):
+        return self.player.get_time()
+    
+    def get_total_time(self):
+        return self.player.get_length()
+    
+    def get_percent(self):
+        return (self.get_current_time() / self.get_total_time())
+    
+    def toggle_loop(self):
+        self.loop = not self.loop
+        return self.loop
+
+    def toggle_shuffle(self):
+        self.shuffle = not self.shuffle
+        return self.shuffle
+    
+    def is_shuffled(self):
+        return self.shuffle
+    
+    def is_looped(self):
+        return self.loop
+    
+    def kill(self):
+        self.killed = True
 
 
+
+# Funktion zum Starten des Players in einem separaten Thread
+def start_player(player):
+    player.play()
+
+# Beispielaufruf
 if __name__ == "__main__":
     import threading
-
-    def test():
-        print("Kam durch")
-        time.sleep(3)
-        print(player.current_song())
-        time.sleep(5)  # 10 Sekunden warten
-        player.pause()
-        print("Lautstärke vor Änderung:", player.get_volume())
-        player.set_volume(50)
-        print("Lautstärke nach Änderung:", player.get_volume())
-        player.skip()
-        print(player.current_song())
-
-    # Beispielverwendung
-    player = MusicPlayer("./music")
-    player.add_to_queue('Sad Trombone')
+    # Pfad zu den Musikdateien
+    song_path = "./music"
+    
+    # Player initialisieren
+    player = MusicPlayer(song_path)
+    
+    # Lieder zur Warteschlange hinzufügen
+    player.add_to_queue('Treehouse')
     player.add_to_queue('ICH ICH ICH')
-    # player.add_to_queue('path/to/your/third/song.mp3')
+    
+    # Thread zum Abspielen des Players starten
+    player_thread = threading.Thread(target=start_player, args=(player,))
+    player_thread.start()
 
-    print("Test")
-    # thread1 = threading.Thread(target=player.play, daemon=True, args=None)
-    print("Helloo?")
-    # thread2 = threading.Thread(test, daemon=True)
-    # thread2.start()
-    # thread1.start()
+    time.sleep(5)
+    print(player.get_percent())
+    # Beispielhafte Interaktion mit dem Player
+    time.sleep(10)  # Warte 10 Sekunden, bevor der Player gestoppt wird
+    print(player.get_percent())
+    player.kill()  # Player stoppen
+    player_thread.join()  # Auf das Ende des Player-Threads warten
 
-    test()
-    print("Aktuelle Warteschlange:", player.get_queue())
+

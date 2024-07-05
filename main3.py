@@ -34,7 +34,6 @@ if not os.path.exists(SONG_FOLDER):
 
 
 """ ---- Hilfsfunktionen ---- """
-
 def add_to_queue(title):
     player.add_to_queue(title)
     update_queue()
@@ -276,6 +275,7 @@ def skip():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
 
 
 # Startet die Flask-App und den Audio-Player-Thread
