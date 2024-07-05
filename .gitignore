@@ -5,6 +5,7 @@
 uploads/
 music/
 temp/
+.db
 .venv/
 .DS_Store/
 .DS_Store

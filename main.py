@@ -10,13 +10,6 @@ from mutagen.id3 import ID3, APIC
 from flask import Flask, request, render_template, redirect, url_for, jsonify
 
 
-
-# Beispiel-URL
-url = "https://www.youtube.com/watch?v=example"
-
-# import traceback
-
-
 # Initialisiert die Flask-App
 app = Flask(__name__)
 
@@ -29,7 +22,6 @@ current_queue = []
 
 if not os.path.exists(SONG_FOLDER):
     os.makedirs(SONG_FOLDER)
-
 
 
 

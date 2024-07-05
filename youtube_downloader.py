@@ -1,7 +1,7 @@
 import os
 import yt_dlp as youtube_dl
 
-SONG_FOLDER = 'music/'  # Passen Sie den Pfad entsprechend an
+SONG_FOLDER = 'music/'
 
 
 def duration_live_and_playlist_filter(info_dict, incomplete):
