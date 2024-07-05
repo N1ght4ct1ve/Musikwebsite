@@ -1,6 +1,7 @@
 import vlc
 import time
 
+
 class MusicPlayer:
     def __init__(self, song_path):
         self.instance = vlc.Instance()
@@ -17,7 +18,8 @@ class MusicPlayer:
         if self.queue:
             next_media = self.queue.pop(0)
             self.the_current_song = next_media
-            self.current_media = self.instance.media_new(f"{self.path}/{next_media}.mp3")
+            self.current_media = self.instance.media_new(
+                f"{self.path}/{next_media}.mp3")
             self.player.set_media(self.current_media)
             self.player.play()
         else:
@@ -49,14 +51,16 @@ class MusicPlayer:
 
     def current_song(self):
         if self.current_media:
-            #print(self.current_media.get_mrl())
-            #test = self.current_media.get_mrl().split('/')[-1][:-4]
-            #test = test.encode()
+            # print(self.current_media.get_mrl())
+            # test = self.current_media.get_mrl().split('/')[-1][:-4]
+            # test = test.encode()
             return self.the_current_song
         return None
 
+
 if __name__ == "__main__":
     import threading
+
     def test():
         print("Kam durch")
         time.sleep(3)
@@ -68,25 +72,19 @@ if __name__ == "__main__":
         print("Lautstärke nach Änderung:", player.get_volume())
         player.skip()
         print(player.current_song())
-        
-
 
     # Beispielverwendung
     player = MusicPlayer("./music")
     player.add_to_queue('Sad Trombone')
     player.add_to_queue('ICH ICH ICH')
-    #player.add_to_queue('path/to/your/third/song.mp3')
+    # player.add_to_queue('path/to/your/third/song.mp3')
 
     print("Test")
-    #thread1 = threading.Thread(target=player.play, daemon=True, args=None)
+    # thread1 = threading.Thread(target=player.play, daemon=True, args=None)
     print("Helloo?")
-    #thread2 = threading.Thread(test, daemon=True)
-    #thread2.start()
-    #thread1.start()
-    
+    # thread2 = threading.Thread(test, daemon=True)
+    # thread2.start()
+    # thread1.start()
+
     test()
     print("Aktuelle Warteschlange:", player.get_queue())
-    
-    
-
-

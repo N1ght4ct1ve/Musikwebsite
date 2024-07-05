@@ -370,18 +370,16 @@ def start_server():
     user_input = input()
 
     if user_input == "r":
+        exit()
         
 # Startet die Flask-App und den Audio-Player-Thread
 if __name__ == '__main__':
     player_thread = AudioPlayer()
     server_thread = HTMLServer(port=5000)
-    
+
 
 
     player_thread.start()
-   
-    
-
     # Startet die Flask-App
-    
-    
+
+

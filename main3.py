@@ -3,8 +3,6 @@ import os
 import re
 import vlc_player # Eigene Funktion :D
 from PIL import Image
-# from queue import Queue
-#import yt_dlp as youtube_dl
 from youtube_downloader import download_from_youtube # Eigene Funktion :D
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC
@@ -128,9 +126,11 @@ def adjust_thumbnail(thumbnail_path, output_path, desired_ratio=(1, 1)):
         img_cropped = img.crop((left, top, right, bottom))
         img_cropped.save(output_path)
 
+
+
+
+
 """ ---- HTML Funktionen ---- """
-
-
 # Definiert die Route für die Startseite
 @app.route('/')
 def index():
@@ -192,9 +192,6 @@ def download_file():
     return redirect(url_for('index'))
 
 
-
-
-
 # Definiert die Route zum Einreihen von Dateien in die Wiedergabeliste
 @app.route('/enqueue', methods=['POST'])
 def enqueue_file():
@@ -215,6 +212,7 @@ def start():
     print(50*"-")
     # player.play()
     return '', 204
+
 
 # Definiert die Route zum Starten der Wiedergabe
 @app.route('/resume', methods=['POST'])
@@ -291,4 +289,4 @@ if __name__ == '__main__':
         TEMPLATES_AUTO_RELOAD = True
     )
     app.register_error_handler(404, page_not_found)  # Registriert die benutzerdefinierte Fehlerseite
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=80)
