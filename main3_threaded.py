@@ -289,7 +289,7 @@ if __name__ == "__main__":
     player = vlc_player.MusicPlayer(SONG_FOLDER)
     Additionals.update_queue()
 
-    database = Database()
+    #database = Database()
 
     app:Thread = HTMLServer(5000)
     app.daemon = True
