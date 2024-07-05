@@ -1,5 +1,7 @@
 Flask
 yt-dlp
 python-vlc
+python-dotenv
 mutagen
 Pillow
+simpleaudio
