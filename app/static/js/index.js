@@ -7,9 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
      })
 
+    const baseURL = '/musicplayer';
+
     // Function to refresh queue data
     function refreshQueue() {
-        fetch('/queue')
+        fetch(`${baseURL}/queue`)
             .then(response => response.json())
             .then(data => {
                 document.getElementById('queue').innerHTML = data.queue.map(song => '<li>' + song + '</li>').join('');
@@ -73,13 +75,14 @@ document.addEventListener('DOMContentLoaded', () => {
     //     console.error('File input with id "fileInput" not found.');
     // }
 
-    var queueBox = document.getElementsByClassName('queue_box');
-
-    queueBox.addEventListener('click', function() {
-        // Toggle class to expand or collapse
-        queueBox.classList.toggle('expanded');
-    });
-
+    const queueBox = document.querySelector('#queueBox'); // Replace with your selector
+    if (queueBox) {
+        queueBox.addEventListener('click', function() {
+            queueBox.classList.toggle('expanded');
+        });
+    } else {
+        console.error('Element #queueBox not found');
+    }
 
     // Theme toggle functionality (already present in your code)
 

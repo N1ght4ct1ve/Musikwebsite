@@ -1,5 +1,5 @@
 //ADD TO QUEUE
-
+const baseURL = '/musicplayer';
 const songOverview = document.getElementById('songs');
 
 if (songOverview) {
@@ -9,7 +9,7 @@ if (songOverview) {
             const songTitle = event.target.getAttribute('data-title');
             
             console.log(songTitle);
-            fetch('/enqueue', {
+            fetch(`${baseURL}/enqueue`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'text/plain' // Setze den Content-Type auf text/plain
@@ -35,7 +35,7 @@ function sendCommand(command) {
     const queue = document.getElementById('queue');
     const songs = queue.getElementsByTagName('li');
     if (command === 'resume') {
-        fetch('/resume', {
+        fetch(`${baseURL}/resume`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -50,7 +50,7 @@ function sendCommand(command) {
             console.error('Error:', error);
         });
     } else if (command === 'pause') {
-        fetch('/pause', {
+        fetch(`${baseURL}/pause`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -65,7 +65,7 @@ function sendCommand(command) {
             console.error('Error:', error);
         });
     } else if (songs.length > 0 && command === 'skip') {
-        fetch('/skip', {
+        fetch(`${baseURL}/skip`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
