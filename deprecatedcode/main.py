@@ -1,48 +1,91 @@
 # Importiert notwendige Module und Pakete
-from flask import Flask, request, render_template, redirect, url_for, jsonify
-import yt_dlp as youtube_dl
 import os
 import re
-from threading import Thread, Event
-from queue import Queue
-from pydub import AudioSegment
-import simpleaudio as sa
+import lib.vlc_player as vlc_player # Eigene Funktion :D
+from PIL import Image
+from lib.youtube_downloader import download_from_youtube # Eigene Funktion :D
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC
-import traceback
-from PIL import Image
+# from threading import Thread, Event
+from flask import Flask, request, render_template, redirect, url_for, jsonify
+
 
 # Initialisiert die Flask-App
 app = Flask(__name__)
 
 # Legt den Ordner für Music fest und erstellt ihn, falls er nicht existiert
-SONG_FOLDER = 'music'
+SONG_FOLDER = 'music/'
 TEMP_IMG = 'static/temp/'
+WORDS_TO_REMOVE = ['official video', 'lyric video', 'audio', 'music video']
+current_song = {"title": "", "cover": ""}
+current_queue = []
+
 if not os.path.exists(SONG_FOLDER):
     os.makedirs(SONG_FOLDER)
 
-# Liste von Wörtern, die aus dem Titel entfernt werden sollen (Noch unnötig)
-WORDS_TO_REMOVE = ['official video', 'lyric video', 'audio', 'music video']
-
-# Initialisiert eine Warteschlange für Dateien, eine Wiedergabeliste und Variablen für das aktuelle Lied
-queue = Queue()
-playback_queue = []
-current_song = {"title": "", "cover": ""}
-
-# Initialisiert Events zum Stoppen und Überspringen von Liedern
-stop_event = Event()
-skip_event = Event()
 
 
 """ ---- Hilfsfunktionen ---- """
-
 def add_to_queue(title):
-    file_path = os.path.join(SONG_FOLDER, f"{title}.mp3")
-    queue.put(file_path)
-    playback_queue.append(f"{title}.mp3")
+    player.add_to_queue(title)
+    update_queue()
+
+
+def update_queue():
+    global current_queue
+    current_queue = player.get_queue()
     print(50*"-")
-    print(playback_queue)
+    print(current_queue)
     print(50*"-")
+
+def update_song(song = None):
+    global current_song
+    neuer_song = player.current_song()
+    if neuer_song:
+            current_song["title"] = neuer_song
+            update_cover(neuer_song)
+    elif song:
+        current_song["title"] = song
+        update_cover(song)
+    else:
+        current_song["title"] = "No song yet"
+        current_song["cover"] = "static/temp/default.png"
+
+    
+    # print(50*"-")
+    # print(current_song)
+    # print(50*"-")
+
+
+def on_song_end(song_title):
+    print(f"Callback: Lied beendet - {song_title}")
+
+def on_song_start(song_title):
+    print(f"Callback: Lied startet - {song_title}")
+
+
+
+def update_cover(song):
+    global current_song
+    # Extrahiert das Cover-Bild, falls vorhanden
+    audio = MP3(f"{SONG_FOLDER}/{song}.mp3", ID3=ID3)
+    if audio.tags.getall("APIC"):
+        for tag in audio.tags.getall("APIC"):
+            if tag.type == 3:  # Vorderes Cover
+                cover_path = os.path.join(TEMP_IMG, f"{current_song['title']}.jpg")
+                try:
+                    with open(cover_path, 'wb') as img:
+                        img.write(tag.data)
+                    adjust_thumbnail(cover_path, cover_path)  # Passt das Thumbnail an
+                    current_song["cover"] = cover_path
+                    break
+                except:
+                    current_song["cover"] = "static/temp/default.png"  # Setzt das Cover auf leer, wenn keins vorhanden ist
+                    break
+    else:
+        current_song["cover"] = "static/temp/default.png"  # Setzt das Cover auf leer, wenn keins vorhanden ist
+    
+
 
 # Hilfsfunktion zur Bereinigung des Titels (Noch unnötig)
 def clean_title(title):
@@ -57,33 +100,6 @@ def clean_title_with_regex(title):
     cleaned_title = re.sub(r'\(.*?\)', '', title)
     return cleaned_title.strip()
 
-def download_from_youtube(url):
-    ydl_opts = {
-        'verbose': True,
-        'format': 'mp3/bestaudio/best',
-        'outtmpl': os.path.join(SONG_FOLDER, '%(title)s.%(ext)s'),
-        'writethumbnail': True,
-        'embedthumbnail': True,
-        'postprocessors': [{
-            'key': 'FFmpegMetadata',
-            'add_metadata': True,
-        },
-        {
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality' : 'best',
-        },
-        {
-            'key': 'EmbedThumbnail',
-        },
-        ]
-    }
-    
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=False)
-        ydl.download([url])
-    
-    return info
 
 
 # Funktion zum Anpassen des Seitenverhältnisses der Thumbnails
@@ -110,9 +126,11 @@ def adjust_thumbnail(thumbnail_path, output_path, desired_ratio=(1, 1)):
         img_cropped = img.crop((left, top, right, bottom))
         img_cropped.save(output_path)
 
+
+
+
+
 """ ---- HTML Funktionen ---- """
-
-
 # Definiert die Route für die Startseite
 @app.route('/')
 def index():
@@ -121,16 +139,19 @@ def index():
     for file in os.listdir(SONG_FOLDER):
         # Prüfen, ob die Dateiendung ".mp3" ist
         if file.endswith(".mp3"):
-            mp3_files.append(file)
+            mp3_files.append(file[:-4])
         mp3_files = sorted(mp3_files)
-    return render_template("index.html", playback_queue=playback_queue, files=mp3_files, current_song=current_song)
+    update_song()
+    return render_template("index.html", playback_queue=current_queue, files=mp3_files, current_song=current_song)
 
 
 # Definiert die Route zum Abrufen der Warteschlange
 @app.route('/queue')
 def get_queue():
+    queue = player.get_queue()
+    update_song()
     # Gibt die aktuelle Wiedergabeliste und das aktuelle Lied als JSON zurück
-    return jsonify({"queue": playback_queue, "current_song": current_song})
+    return jsonify({"queue": current_queue, "current_song": current_song})
 
 
 @app.route('/upload', methods=['POST'])
@@ -139,8 +160,7 @@ def upload_file():
     if file and file.filename.endswith('.mp3'):
         file_path = os.path.join(SONG_FOLDER, file.filename)
         file.save(file_path)
-        queue.put(file_path)
-        playback_queue.append(file.filename)
+
     else:
         #return jsonify({"error": "Invalid file format"}), 400
         return render_template('error.html', error_message="Ungültiges Dateiformat. Bitte laden Sie nur MP3-Dateien hoch."), 400
@@ -151,10 +171,21 @@ def upload_file():
 @app.route('/download', methods=['POST'])
 def download_file():
     url = request.form['url']
-    if url and ("youtube.com" or "youtu.be" in url):
-        info_dict = download_from_youtube(url)
-        title = info_dict.get('title', None)
-        add_to_queue(title)
+
+    if not url:
+        return render_template('error.html', error_message="Keine URL angegeben."), 400
+
+    if url and url.startswith("https://www.youtube.com/watch?v=") or url.startswith("https://youtu.be/") or url.startswith("https://music.youtube.com/watch?v="):
+        result = download_from_youtube(url, SONG_FOLDER)
+
+        if 'error' in result:
+            print(f"Fehler: {result['error']}")
+            return render_template('error.html', error_message=f"Fehler: {result['error']}"), 400
+        else:
+            print(f"Erfolgreich heruntergeladen: {result['title']}")
+            title = result.get('title', None)
+            add_to_queue(title)
+
     else:
         #return jsonify({"error": "Invalid URL"}), 400
         return render_template('error.html', error_message="Ungültige URL. Bitte geben Sie eine gültige YouTube-URL ein."), 400
@@ -164,43 +195,80 @@ def download_file():
 # Definiert die Route zum Einreihen von Dateien in die Wiedergabeliste
 @app.route('/enqueue', methods=['POST'])
 def enqueue_file():
-    print(request)
+    # print(request)
     file = request.data.decode('utf-8')
-    print(file)
-    if file:
-        file_path = os.path.join(SONG_FOLDER, file)
-        queue.put(file_path)
-        playback_queue.append(file)
+    print(f"Neuer Song für die Queue: {file}")
+    add_to_queue(file)
+    
     return redirect(url_for('index'))
+
 
 # Definiert die Route zum Starten der Wiedergabe
 @app.route('/start', methods=['POST'])
 def start():
-    stop_event.clear()
-    skip_event.clear()
-    if not player_thread.is_alive():
-        print("Dead!")
-        player_thread.start()
+    #Geht zurzeit nicht (Unnötig bisher)
+    print(50*"-")
+    print(f"Hab Start Command bekommen \n braucht man grad aber nicht")
+    print(50*"-")
+    # player.play()
     return '', 204
+
 
 # Definiert die Route zum Starten der Wiedergabe
 @app.route('/resume', methods=['POST'])
 def resume():
-    stop_event.clear()
-    skip_event.clear()
+    global current_queue
+    print(50*"-")
+    print("Hab Resume Command bekommen")
+    print(50*"-")
+    
+    print(f"Aktueller song: {player.current_song()}")
+    update_queue()
+    if current_queue:
+        update_song(current_queue[0])
+        player.play()
     return '', 204
 
 # Definiert die Route zum Stoppen der Wiedergabe
 @app.route('/pause', methods=['POST'])
 def stop():
-    stop_event.set()
+    print(50*"-")
+    print("Hab Pause Command bekommen")
+    print(50*"-")
+    player.pause()
     return '', 204
+
+# Definiert die Route zur Lautstärkeänderung der Wiedergabe
+@app.route('/setvolume', methods=['POST'])
+def set_volume():
+    volume = request.data.decode('utf-8')
+    print(volume)
+    try: 
+        volume = int(volume)
+    except:
+        print("Irgendwer hat Volume verkackt")
+        volume = 100
+    if volume <= 150:
+        player.set_volume(volume)
+
+
+    print(50*"-")
+    print("Hab Lautstärke Command bekommen")
+    print(50*"-")
+    return '', 204
+
 
 
 # Definiert die Route zum Überspringen des aktuellen Liedes
 @app.route('/skip', methods=['POST'])
 def skip():
-    skip_event.set()
+    print(50*"-")
+    print("Hab Skip Command bekommen")
+    print(50*"-")
+    update_song(player.get_queue()[0])
+    player.skip()
+    update_queue()
+
     return '', 204
 
 
@@ -210,73 +278,14 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 
-# Funktion zur Wiedergabe von Audio
-def play_audio():
-    while True:
-        stop_event.clear()  # Setzt das Stop-Event zurück
-        skip_event.clear()  # Setzt das Skip-Event zurück
-        file_path = queue.get()  # Holt den Dateipfad aus der Warteschlange
-        if file_path:
-            # Entfernt das aktuelle Lied aus der Wiedergabeliste
-            playback_queue.remove(os.path.basename(file_path))
-            # Setzt den Titel des aktuellen Lieds
-            current_song["title"] = os.path.basename(file_path)[:-4]
-            
-
-            # Extrahiert das Cover-Bild, falls vorhanden
-            audio = MP3(file_path, ID3=ID3)
-            if audio.tags.getall("APIC"):
-                for tag in audio.tags.getall("APIC"):
-                    if tag.type == 3:  # Vorderes Cover
-                        cover_path = os.path.join(TEMP_IMG, f"{current_song['title'][:-4]}.jpg")
-                        try:
-                            with open(cover_path, 'wb') as img:
-                                img.write(tag.data)
-                            adjust_thumbnail(cover_path, cover_path)  # Passt das Thumbnail an
-                            current_song["cover"] = cover_path
-                            break
-                        except:
-                            current_song["cover"] = "static/temp/default.png"  # Setzt das Cover auf leer, wenn keins vorhanden ist
-                            break
-            else:
-                current_song["cover"] = "static/temp/default.png"  # Setzt das Cover auf leer, wenn keins vorhanden ist
-            
-            # Lädt das Lied als AudioSegment
-            song = AudioSegment.from_mp3(file_path)
-            
-            try:
-                # Spielt das Lied mit simpleaudio ab
-                play_obj = sa.play_buffer(
-                    song.raw_data,
-                    num_channels=song.channels,
-                    bytes_per_sample=song.sample_width,
-                    sample_rate=song.frame_rate
-                )
-                
-                # Überprüft, ob das Lied noch abgespielt wird
-                while play_obj.is_playing():
-                    if stop_event.is_set():
-                        play_obj.stop()  # Stoppt die Wiedergabe, wenn das Stop-Event gesetzt ist
-                        # play_obj.pause()
-                        return
-                    if skip_event.is_set():
-                        play_obj.stop()  # Stoppt die Wiedergabe, wenn das Skip-Event gesetzt ist
-                        break
-                play_obj.wait_done()  # Wartet, bis die Wiedergabe vollständig abgeschlossen ist
-            
-            except Exception as e:
-                # Behandelt auftretende Fehler bei der Wiedergabe
-                print(f"Fehler beim Abspielen von '{current_song['title']}': {e}")
-                traceback.print_exc()  # Protokolliert die Stack-Trace-Informationen für die Fehlerverfolgung
-                continue  # Setzt die Wiedergabe des nächsten Lieds fort
-
-
 
 # Startet die Flask-App und den Audio-Player-Thread
 if __name__ == '__main__':
     # Definiert den Audio-Player-Thread
-    player_thread = Thread(target=play_audio, daemon=True)
-    player_thread.start()
+    player = vlc_player.MusicPlayer(SONG_FOLDER)
+    update_queue()
+    player.register_event("song_end", on_song_end)
+    player.register_event("song_start", on_song_start)
     
     # Startet die Flask-App
     app.config.update(

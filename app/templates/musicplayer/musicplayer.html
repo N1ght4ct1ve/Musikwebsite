@@ -27,7 +27,7 @@
     
     <div id="root">
     <div id="header" class="main">
-        <button class="openbtn" onclick="toggleNav()">&#9776;</button>
+      <a href="{{ url_for('main.index') }}" class="button1">Home</a>
         <label class="theme-switch">
             <input type="checkbox" class="theme-switch__checkbox">
             <div class="theme-switch__container">
@@ -50,16 +50,13 @@
           </label>
     </div>
     <div id="main2" class="main">
-            <form id="uploadForm" method="post" enctype="multipart/form-data" action="/upload">
-                <button type="button" class="button1" id="fileButton"><i class="fa fa-upload"></i></button>
-                <input class="hidden" type="file" id="fileInput" name="file">
-                <button type="submit" class="button1">Upload MP3</button>
-            </form>
-            <form method="post" action="/download">
-                <input class="inputfield" type="text" name="url" placeholder="YouTube URL">
-                <input class="button1" type="submit" value="Download from YouTube">
-            </form>
-        </div>
+      <form id="uploadForm" method="post" enctype="multipart/form-data" action="/upload">
+          <input class="inputfield" type="text" name="url" placeholder="YouTube URL">
+          <input class="hidden" type="file" id="fileInput" name="file">
+          <button type="button" class="button1" id="fileButton"><i class="fa fa-upload"></i></button>
+          <button type="submit" class="button1">Upload</button>
+      </form>
+    </div>
     <div class="parent">
     <div class="current_song_view">
       <div class="current_song_card">
@@ -113,6 +110,7 @@
         
     </div>
     </div>
+    <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
     <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
     <script src="{{ url_for('static', filename='js/song_controller.js') }}"></script>

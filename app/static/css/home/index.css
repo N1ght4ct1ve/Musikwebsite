@@ -1,0 +1,127 @@
+/* Grundlegende Stile für die Seite */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Stile für den Light Mode */
+body:not(.dark-mode) {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.header-bar {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.header-bar:not(.dark-mode) {
+    background-color: #007bff;
+}
+
+/* Stile für den Dark Mode */
+.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+.dark-mode .header-bar {
+    background-color: #1a73e8;
+}
+
+/* Stile für Buttons */
+.button, .toggle-button {
+    padding: 5px 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.button {
+    background-color: #007bff;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+.dark-mode .button {
+    background-color: #1a73e8;
+}
+
+.dark-mode .button:hover {
+    background-color: #0f59c3;
+}
+
+.toggle-button {
+    margin-top: 20px;
+    background-color: #343a40;
+}
+
+.toggle-button:hover {
+    background-color: #495057;
+}
+
+.dark-mode .toggle-button {
+    background-color: #6c757d;
+}
+
+.dark-mode .toggle-button:hover {
+    background-color: #5a6268;
+}
+
+.gg-sun {
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    transform: scale(var(--ggs,1));
+    width: 24px;
+    height: 24px;
+    background:
+    linear-gradient(to bottom,
+    currentColor 4px,transparent 0)
+    no-repeat 5px -6px/2px 6px,
+    linear-gradient(to bottom,
+    currentColor 4px,transparent 0)
+    no-repeat 5px 14px/2px 6px,
+    linear-gradient(to bottom,
+    currentColor 4px,transparent 0)
+    no-repeat -8px 5px/6px 2px,
+    linear-gradient(to bottom,
+    currentColor 4px,transparent 0)
+    no-repeat 14px 5px/6px 2px;
+    border-radius: 100px;
+    box-shadow: inset 0 0 0 2px;
+    border: 6px solid transparent
+   }
+   
+   .gg-sun::after,
+   .gg-sun::before {
+    content: "";
+    display: block;
+    box-sizing: border-box;
+    position: absolute;
+    width: 24px;
+    height: 2px;
+    border-right: 4px solid;
+    border-left: 4px solid;
+    left: -6px;
+    top: 5px
+   }
+   
+   .gg-sun::before {
+    transform: rotate(-45deg)
+   }
+   
+   .gg-sun::after {
+    transform: rotate(45deg)
+   } 

@@ -1,7 +1,11 @@
 Flask
+flask-login
+flask-sqlalchemy
+werkzeug
 yt-dlp
 python-vlc
 python-dotenv
 mutagen
 Pillow
 simpleaudio
+markdown

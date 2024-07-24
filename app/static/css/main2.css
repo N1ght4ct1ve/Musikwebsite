@@ -81,6 +81,7 @@ body {
     transition: margin-left .5s; /* Transition-Effekt */
 }
 
+
 .main {
     border-radius: 20px;
     box-shadow: 0 0 10px var(--fade-color1);
@@ -200,6 +201,7 @@ body {
     overflow-y:scroll;
     color: var(--text-color);
 
+    height: 30vh;
 }
 
 .queue_box {
@@ -216,6 +218,11 @@ body {
 
     overflow: hidden;
     overflow-y:scroll;
+    
+}
+
+#main3.expanded {
+    max-height: 1000vh; /* Endhöhe wenn ausgeklappt */
 }
 
 .songlist {
@@ -224,7 +231,6 @@ body {
     background: linear-gradient(45deg, var(--fade-color2) 70%, var(--fade-color3) 100%);
     padding: 10px 25px;
     height: 20vh;
-    max-height: 10%;
     overflow: hidden;
     overflow-y:scroll;
 }
@@ -285,9 +291,9 @@ body {
 .button1 {
     background-color: var(--button-color);
     border: none;
-    border-radius: 20px;
+    border-radius: 13px;
     color: black;
-    padding: 15px 32px;
+    padding: 10px 25px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -295,8 +301,9 @@ body {
     margin: 4px 2px;
     cursor: pointer;
     color: var(--text-color);
-
 }
+
+.hidden { display: none; }
 
 .inputfield {
     outline-color: rgba(168, 0, 173, 1);

@@ -58,7 +58,7 @@ if __name__ == "__main__":
     # result = download_from_youtube("https://www.youtube.com/watch?v=NjMPOO9WV7E", SONG_FOLDER)
     # result2 = download_from_youtube("https://music.youtube.com/watch?v=a9br6ckspug&si=iX1q1iNqPXVxSeIg", SONG_FOLDER)
     result = download_from_youtube(
-        "https://www.youtube.com/watch?v=XXYlFuWEuKI&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj", SONG_FOLDER)
+        "https://www.youtube.com/watch?v=XXYlFuWEuKI&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj", 'music/')
     if 'error' in result:
         print(f"Fehler: {result['error']}")
     else:

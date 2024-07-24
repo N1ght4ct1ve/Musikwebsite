@@ -12,7 +12,7 @@ from mutagen.id3 import ID3, APIC
 import traceback
 from PIL import Image
 
-import music_player
+import deprecatedcode.music_player as music_player
 
 # Initialisiert die Flask-App
 app = Flask(__name__)

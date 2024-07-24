@@ -1,0 +1,26 @@
+/* Grundlegendes Styling für den Button */
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none; /* Entfernt die Standard-Unterstreichung von Links */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transitions for background color and scaling */
+    cursor: pointer; /* Zeigt den Zeiger-Cursor an */
+}
+
+/* Hover-Effekte für den Button */
+.button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05); /* Vergrößert den Button leicht bei Hover */
+}
+
+/* Active-Effekt für den Button, wenn er geklickt wird */
+.button:active {
+    background-color: #004494;
+    transform: scale(0.98); /* Verkleinert den Button leicht bei Klick */
+}

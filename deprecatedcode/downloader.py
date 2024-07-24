@@ -1,14 +1,12 @@
 import os
 import yt_dlp as youtube_dl
 
-SONG_FOLDER = './music'
 
 def download_from_youtube(url):
-
     ydl_opts = {
         'verbose': True,
         'format': 'mp3/bestaudio/best',
-        'outtmpl': os.path.join(SONG_FOLDER, '%(title)s.%(ext)s'),
+        'outtmpl': os.path.join('./music', '%(title)s.%(ext)s'),
         'writethumbnail': True,
         'embedthumbnail': True,
         'postprocessors': [{
