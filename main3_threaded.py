@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 
 # Eigene Module ################# 
 import vlc_player
-import lib.Database as Database
+import Database
 
 
 SONG_FOLDER = 'music/'

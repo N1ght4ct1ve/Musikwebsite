@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (fileInput) {
         fileInput.addEventListener('change', function () {
             if (this.files.length > 0) {
-                const fileName = this.files[0]  .name;
+                const fileName = this.files[0].name;
                 document.getElementById('fileButton').innerHTML = `Selected File: ${fileName}`;
             }
         });
@@ -49,36 +49,29 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('File input with id "fileInput" not found.');
     }
 
-
-    // const songOverview = document.getElementById('queue_box');
-    // if (songOverview) {
-    //     // Setze die ursprüngliche Höhe des songOverview-Elements
-    //     const originalHeight = "50px";
+    const songOverview = document.getElementById('queue_box');
+    if (songOverview) {
+        // Setze die ursprüngliche Höhe des songOverview-Elements
+        const originalHeight = "50px";
     
-    //     songOverview.addEventListener('click', () => {
-    //         const numberOfSongs = songOverview.getElementsByClassName('song-item').length;
-    //         const heightPerSong = 60; // Höhe eines einzelnen Liedes in Pixeln (anpassen nach Bedarf)
-    //         const maxHeight = 80 * window.innerHeight / 100; // 80vh in Pixel umgerechnet
-    //         // const newHeight = Math.min(numberOfSongs * heightPerSong, maxHeight);
-    //         var newHeight = numberOfSongs * heightPerSong;
-    //         songOverview.style.height = `${newHeight}px`;
-    //         songOverview.style.transition = ".5s";
-    //     });
+        songOverview.addEventListener('click', () => {
+            const numberOfSongs = songOverview.getElementsByClassName('song-item').length;
+            const heightPerSong = 60; // Höhe eines einzelnen Liedes in Pixeln (anpassen nach Bedarf)
+            const maxHeight = 80 * window.innerHeight / 100; // 80vh in Pixel umgerechnet
+            // const newHeight = Math.min(numberOfSongs * heightPerSong, maxHeight);
+            var newHeight = numberOfSongs * heightPerSong;
+            songOverview.style.height = `${newHeight}px`;
+            songOverview.style.transition = ".5s";
+        });
     
-    //     // window.addEventListener('scroll', () => {
-    //     //     // Setze die Höhe zurück auf die ursprüngliche Höhe, wenn die Seite scrollt
-    //     //     songOverview.style.height = originalHeight;
-    //     // });
-    // } else {
-    //     console.error('File input with id "fileInput" not found.');
-    // }
+        // window.addEventListener('scroll', () => {
+        //     // Setze die Höhe zurück auf die ursprüngliche Höhe, wenn die Seite scrollt
+        //     songOverview.style.height = originalHeight;
+        // });
+    } else {
+        console.error('File input with id "fileInput" not found.');
+    }
 
-    var queueBox = document.getElementsByClassName('queue_box');
-
-    queueBox.addEventListener('click', function() {
-        // Toggle class to expand or collapse
-        queueBox.classList.toggle('expanded');
-    });
 
 
     // Theme toggle functionality (already present in your code)
