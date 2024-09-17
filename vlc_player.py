@@ -27,7 +27,7 @@ class MusicPlayer:
 
     def play_next(self):
         if self.queue:
-            if self.shuffle and (not self.loop):
+            if (self.shuffle and (not self.loop)):
                 random.shuffle(self.queue)
             next_media = self.queue.pop(0)
             self.the_current_song = next_media

@@ -62,6 +62,7 @@ def on_song_end(song_title):
 
 def on_song_start(song_title):
     print(f"Callback: Lied startet - {song_title}")
+    update_song()
 
 
 
@@ -141,7 +142,7 @@ def index():
         if file.endswith(".mp3"):
             mp3_files.append(file[:-4])
         mp3_files = sorted(mp3_files)
-    update_song()
+    #update_song()
     return render_template("index.html", playback_queue=current_queue, files=mp3_files, current_song=current_song)
 
 
@@ -149,7 +150,7 @@ def index():
 @app.route('/queue')
 def get_queue():
     queue = player.get_queue()
-    update_song()
+    #update_song()
     # Gibt die aktuelle Wiedergabeliste und das aktuelle Lied als JSON zurück
     return jsonify({"queue": current_queue, "current_song": current_song})
 
@@ -162,8 +163,7 @@ def upload_file():
         file.save(file_path)
 
     else:
-        #return jsonify({"error": "Invalid file format"}), 400
-        return render_template('error.html', error_message="Ungültiges Dateiformat. Bitte laden Sie nur MP3-Dateien hoch."), 400
+        return render_template('error.html', error_message="Ungültiges Dateiformat. Bitte lade nur MP3-Dateien hoch."), 400
     return redirect(url_for('index'))
 
 
@@ -188,30 +188,19 @@ def download_file():
 
     else:
         #return jsonify({"error": "Invalid URL"}), 400
-        return render_template('error.html', error_message="Ungültige URL. Bitte geben Sie eine gültige YouTube-URL ein."), 400
+        return render_template('error.html', error_message="Ungültige URL. Bitte gib eine gültige YouTube-URL ein."), 400
     return redirect(url_for('index'))
 
 
 # Definiert die Route zum Einreihen von Dateien in die Wiedergabeliste
 @app.route('/enqueue', methods=['POST'])
 def enqueue_file():
-    # print(request)
     file = request.data.decode('utf-8')
     print(f"Neuer Song für die Queue: {file}")
     add_to_queue(file)
     
     return redirect(url_for('index'))
 
-
-# Definiert die Route zum Starten der Wiedergabe
-@app.route('/start', methods=['POST'])
-def start():
-    #Geht zurzeit nicht (Unnötig bisher)
-    print(50*"-")
-    print(f"Hab Start Command bekommen \n braucht man grad aber nicht")
-    print(50*"-")
-    # player.play()
-    return '', 204
 
 
 # Definiert die Route zum Starten der Wiedergabe
@@ -225,7 +214,7 @@ def resume():
     print(f"Aktueller song: {player.current_song()}")
     update_queue()
     if current_queue:
-        update_song(current_queue[0])
+        #update_song(current_queue[0])
         player.play()
     return '', 204
 
@@ -265,12 +254,35 @@ def skip():
     print(50*"-")
     print("Hab Skip Command bekommen")
     print(50*"-")
-    update_song(player.get_queue()[0])
+    #update_song(player.get_queue()[0])
     player.skip()
     update_queue()
 
     return '', 204
 
+
+# Definiert die Route zum LoopTogglen des aktuellen Liedes
+@app.route('/toggle_loop', methods=['POST'])
+def toggle_loop():
+    print(50*"-")
+    print("Hab LoopToggle Command bekommen")
+    print(50*"-")
+    #update_song(player.get_queue()[0])
+    player.toggle_loop()
+    update_queue()
+    return '', 204
+
+
+# Definiert die Route zum Shuffle der aktuellen Queue
+@app.route('/toggle_shuffle', methods=['POST'])
+def toggle_shuffle():
+    print(50*"-")
+    print("Hab Shuffle Command bekommen")
+    print(50*"-")
+    player.toggle_shuffle()
+    update_queue()
+
+    return '', 204
 
 # Definiert eine benutzerdefinierte Fehlerseite für den HTTP-Statuscode 404
 @app.errorhandler(404)
