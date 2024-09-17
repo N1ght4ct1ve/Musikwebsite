@@ -6,3 +6,6 @@ mutagen
 Pillow
 simpleaudio
 youtube-search-python
+
+#Wenn man die Spotify API nutzen möchte, sonst egal
+spotipy

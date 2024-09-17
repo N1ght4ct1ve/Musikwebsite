@@ -6,10 +6,38 @@ from PIL import Image
 from youtube_downloader import download_from_youtube # Eigene Funktion :D
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC
-# from threading import Thread, Event
 from flask import Flask, request, render_template, redirect, url_for, jsonify
+from youtubesearchpython import VideosSearch # Braucht man um Songs mit dem Namen zu suchen
+from dotenv import load_dotenv
 
-from youtubesearchpython import VideosSearch # teste ich noch (bisher nicht offiziell eingebunden) pip3 install youtube-search-python
+if os.path.exists(".env"):
+    print(f".env Datei existiert bereits")
+    load_dotenv()
+    spotify_available = bool(os.getenv('AVAILABLE'))
+    if spotify_available:
+        from spotify_search import get_track_info # Eigenes Modul zum Suchen von Spotify-Songs (Spotify API und spotipy ()`pip install spotipy`) erforderlich)
+else:
+    spotify_available = False
+    client_id = "12345"
+    client_secret = "12345"
+
+    available = input("Willst du Spotify Links nutzen können? (Ja/Nein): ")
+    if available.lower() == "ja":
+        spotify_available = True
+
+        client_id = input("Bitte gib deinen Spotify Client ID ein: ")
+        client_secret = input("Bitte gib deinen Spotify Client Secret ein: ")
+    default_values = {
+        "AVAILABLE": spotify_available,
+        "CLIENT_ID": client_id,
+        "CLIENT_SECRET": client_secret,
+    }
+    with open(".env", "w") as file:
+        for key, value in default_values.items():
+            file.write(f"{key}={value}\n")
+    print(f".env wurde erstellt {'und Spotify wurde aktiviert.' if spotify_available else 'aber Spotify ist nicht verfügbar'}")
+   
+
 
 
 # Initialisiert die Flask-App
@@ -189,7 +217,17 @@ def download_file():
             add_to_queue(title)
 
     elif url and url.startswith("https://open.spotify.com/"):
-        return render_template('error.html', error_message="Spotify-Links werden nicht unterstützt."), 400
+        song_name, artist = get_track_info(url)
+        videosSearch = VideosSearch(f"{song_name} {artist}", limit = 2)
+        link = videosSearch.result()['result'][0]['link']
+        result = download_from_youtube(link, SONG_FOLDER)
+        if 'error' in result:
+            print(f"Fehler: {result['error']}")
+            return render_template('error.html', error_message=f"Fehler: {result['error']}"), 400
+        else:
+            print(f"Erfolgreich heruntergeladen: {result['title']}")
+            title = result.get('title', None)
+            add_to_queue(title)
     
     elif url:
         videosSearch = VideosSearch(url, limit = 2)
