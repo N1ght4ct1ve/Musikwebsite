@@ -14,8 +14,6 @@ if os.path.exists(".env"):
     print(f".env Datei existiert bereits")
     load_dotenv()
     spotify_available = bool(os.getenv('AVAILABLE'))
-    if spotify_available:
-        from spotify_search import get_track_info # Eigenes Modul zum Suchen von Spotify-Songs (Spotify API und spotipy ()`pip install spotipy`) erforderlich)
 else:
     spotify_available = False
     client_id = "12345"
@@ -24,7 +22,6 @@ else:
     available = input("Willst du Spotify Links nutzen können? (Ja/Nein): ")
     if available.lower() == "ja":
         spotify_available = True
-
         client_id = input("Bitte gib deinen Spotify Client ID ein: ")
         client_secret = input("Bitte gib deinen Spotify Client Secret ein: ")
     default_values = {
@@ -37,7 +34,8 @@ else:
             file.write(f"{key}={value}\n")
     print(f".env wurde erstellt {'und Spotify wurde aktiviert.' if spotify_available else 'aber Spotify ist nicht verfügbar'}")
    
-
+if spotify_available:
+        from spotify_search import get_track_info # Eigenes Modul zum Suchen von Spotify-Songs (Spotify API und spotipy ()`pip install spotipy`) erforderlich)
 
 
 # Initialisiert die Flask-App
@@ -217,6 +215,8 @@ def download_file():
             add_to_queue(title)
 
     elif url and url.startswith("https://open.spotify.com/"):
+        if not spotify_available:
+            return render_template('error.html', error_message="Der Admin hat Spotify leider nicht freigeschalten"), 400
         song_name, artist = get_track_info(url)
         videosSearch = VideosSearch(f"{song_name} {artist}", limit = 2)
         link = videosSearch.result()['result'][0]['link']
