@@ -5,3 +5,4 @@ python-dotenv
 mutagen
 Pillow
 simpleaudio
+youtube-search-python

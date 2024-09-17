@@ -9,6 +9,8 @@ from mutagen.id3 import ID3, APIC
 # from threading import Thread, Event
 from flask import Flask, request, render_template, redirect, url_for, jsonify
 
+from youtubesearchpython import VideosSearch # teste ich noch (bisher nicht offiziell eingebunden) pip3 install youtube-search-python
+
 
 # Initialisiert die Flask-App
 app = Flask(__name__)
@@ -176,6 +178,26 @@ def download_file():
         return render_template('error.html', error_message="Keine URL angegeben."), 400
 
     if url and url.startswith("https://www.youtube.com/watch?v=") or url.startswith("https://youtu.be/") or url.startswith("https://music.youtube.com/watch?v="):
+        result = download_from_youtube(url, SONG_FOLDER)
+
+        if 'error' in result:
+            print(f"Fehler: {result['error']}")
+            return render_template('error.html', error_message=f"Fehler: {result['error']}"), 400
+        else:
+            print(f"Erfolgreich heruntergeladen: {result['title']}")
+            title = result.get('title', None)
+            add_to_queue(title)
+
+    elif url and url.startswith("https://open.spotify.com/"):
+        return render_template('error.html', error_message="Spotify-Links werden nicht unterstützt."), 400
+    
+    elif url:
+        videosSearch = VideosSearch(url, limit = 2)
+        print(videosSearch.result())
+        url = videosSearch.result()['result'][0]['link']
+        print("-----Hier ist der Link-----")
+        print(url)
+        print("-----Hier ist der Link-----")
         result = download_from_youtube(url, SONG_FOLDER)
 
         if 'error' in result:
