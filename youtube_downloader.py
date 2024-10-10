@@ -1,4 +1,5 @@
 import os
+import re
 import yt_dlp as youtube_dl
 
 SONG_FOLDER = 'music/'
@@ -11,7 +12,13 @@ def clean_title(title):
     for word in WORDS_TO_REMOVE:
         title = title.replace(word, '')
     # Entferne doppelte Leerzeichen und trimme den Titel
+    title = clean_title_with_regex(title)
     return ' '.join(title.split()).strip()
+
+def clean_title_with_regex(title):
+    # Beispiel-Regex: Entfernt alles, was in runden Klammern steht
+    cleaned_title = re.sub(r'\(.*?\)', '', title)
+    return cleaned_title
 
 def duration_live_and_playlist_filter(info_dict, incomplete):
     global minimal_duration, maximal_duration
@@ -68,6 +75,7 @@ def download_from_youtube(url, path):
             with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([url])
 
+            info['title'] = title
             return info
     except youtube_dl.utils.DownloadError as e:
         return {'error': str(e)}
@@ -75,7 +83,7 @@ def download_from_youtube(url, path):
         return {'error': str(e)}
 
 if __name__ == "__main__":
-    result = download_from_youtube("https://www.youtube.com/watch?v=XXYlFuWEuKI&list=PLMC9KNkIncKtPzgY-5rmhvj7fax8fdxoj", SONG_FOLDER)
+    result = download_from_youtube("https://www.youtube.com/watch?v=Dx0MGYe4jR4&pp=ygUJa3JhZnRrbHVi", SONG_FOLDER)
     if 'error' in result:
         print(f"Fehler: {result['error']}")
     else:

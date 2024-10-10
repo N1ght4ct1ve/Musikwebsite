@@ -47,7 +47,7 @@ app = Flask(__name__)
 # Legt den Ordner für Music fest und erstellt ihn, falls er nicht existiert
 SONG_FOLDER = 'music/'
 TEMP_IMG = 'static/temp/'
-WORDS_TO_REMOVE = ['(', ')', '"', 'official video', 'lyric video', 'audio', 'music video']
+WORDS_TO_REMOVE = ['official video', 'lyric video', 'audio', 'music video']
 current_song = {"title": "", "cover": ""}
 current_queue = []
 
