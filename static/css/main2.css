@@ -435,3 +435,35 @@ CURTAIN WRAPPER
     
 
 }
+
+
+.alert-success {
+    background-color: #28a745; /* Bootstrap grüner Farbton */
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+}
+
+.alert-danger {
+    background-color: #dc3545; /* Bootstrap roter Farbton */
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+}
+
+.slide-in {
+    animation: slide-in 0.5s forwards; /* Animation für Slide-In */
+}
+
+@keyframes slide-in {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

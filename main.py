@@ -1,14 +1,17 @@
 # Importiert notwendige Module und Pakete
 import os
 import re
+import threading # Mal schauen, ob es klappt
 import vlc_player # Eigene Funktion :D
 from PIL import Image
-from youtube_downloader import download_from_youtube # Eigene Funktion :D
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC
-from flask import Flask, request, render_template, redirect, url_for, jsonify
+from youtube_downloader import download_from_youtube # Eigene Funktion :D
+from flask import Flask, request, render_template, redirect, url_for, jsonify, session
 from youtubesearchpython import VideosSearch # Braucht man um Songs mit dem Namen zu suchen
 from dotenv import load_dotenv
+
+
 
 if os.path.exists(".env"):
     print(f".env Datei existiert bereits")
@@ -20,7 +23,7 @@ else:
     client_secret = "12345"
 
     available = input("Willst du Spotify Links nutzen können? (Ja/Nein): ")
-    if available.lower() == "ja":
+    if (available.lower() in "ja") or (available.lower() in "yes"):
         spotify_available = True
         client_id = input("Bitte gib deinen Spotify Client ID ein: ")
         client_secret = input("Bitte gib deinen Spotify Client Secret ein: ")
@@ -44,9 +47,11 @@ app = Flask(__name__)
 # Legt den Ordner für Music fest und erstellt ihn, falls er nicht existiert
 SONG_FOLDER = 'music/'
 TEMP_IMG = 'static/temp/'
-WORDS_TO_REMOVE = ['official video', 'lyric video', 'audio', 'music video']
+WORDS_TO_REMOVE = ['(', ')', '"', 'official video', 'lyric video', 'audio', 'music video']
 current_song = {"title": "", "cover": ""}
 current_queue = []
+
+download_queue = []
 
 if not os.path.exists(SONG_FOLDER):
     os.makedirs(SONG_FOLDER)
@@ -170,8 +175,16 @@ def index():
         if file.endswith(".mp3"):
             mp3_files.append(file[:-4])
         mp3_files = sorted(mp3_files)
-    #update_song()
-    return render_template("index.html", playback_queue=current_queue, files=mp3_files, current_song=current_song)
+
+    # Hol den Download-Status aus der Session (falls vorhanden)
+    download_status = session.pop('download_status', None)
+    
+    # update_song() kannst du weiterhin hier aufrufen, falls nötig
+    return render_template("index.html", 
+                           playback_queue=current_queue, 
+                           files=mp3_files, 
+                           current_song=current_song,
+                           download_status=download_status)
 
 
 # Definiert die Route zum Abrufen der Warteschlange
@@ -197,6 +210,77 @@ def upload_file():
 
 
 @app.route('/download', methods=['POST'])
+def download_song():
+    url = request.form['url']
+    
+    # Überprüfen, ob die URL leer ist
+    if not url:
+        session['download_status'] = 'Fehler: Keine URL angegeben.'
+        return redirect(url_for('index'))  # Leitet zurück zur Startseite
+      
+    download_queue.append(url)
+    session['download_status'] = 'Download erfolgreich in die Warteschlange eingereiht.'
+    download_thread = threading.Thread(target=start_downloads, daemon=True)
+    download_thread.start()
+
+    return redirect(url_for('index'))
+
+def start_downloads():
+    # Wenn die Download-Warteschlange leer ist, nichts tun
+    if not download_queue:
+        return
+
+    # Nehme den ersten Song aus der Warteschlange
+    url = download_queue.pop(0)
+
+    if url.startswith("https://www.youtube.com/watch?v=") or url.startswith("https://youtu.be/") or url.startswith("https://music.youtube.com/watch?v="):
+        result = download_from_youtube(url, SONG_FOLDER)
+
+        if 'error' in result:
+            print(f"Fehler: {result['error']}")
+            # Hier könntest du den Status aktualisieren, wenn der Download fehlschlägt
+        else:
+            print(f"Erfolgreich heruntergeladen: {result['title']}")
+            title = result.get('title', None)
+            add_to_queue(title)
+
+    elif url.startswith("https://open.spotify.com/"):
+        if not spotify_available:
+            print("Spotify ist nicht aktiviert.")
+            return
+        
+        if url.startswith("https://open.spotify.com/playlist/"):
+            print("Spotify Playlists sind nicht unterstützt.")
+            return
+        else:
+            song_name, artist = get_track_info(url)
+            videosSearch = VideosSearch(f"{song_name} {artist}", limit=2)
+            link = videosSearch.result()['result'][0]['link']
+            result = download_from_youtube(link, SONG_FOLDER)
+            if 'error' in result:
+                print(f"Fehler: {result['error']}")
+            else:
+                print(f"Erfolgreich heruntergeladen: {result['title']}")
+                title = result.get('title', None)
+                add_to_queue(title)
+
+    else:
+        videosSearch = VideosSearch(url, limit=2)
+        url = videosSearch.result()['result'][0]['link']
+        result = download_from_youtube(url, SONG_FOLDER)
+
+        if 'error' in result:
+            print(f"Fehler: {result['error']}")
+        else:
+            print(f"Erfolgreich heruntergeladen: {result['title']}")
+            title = result.get('title', None)
+            add_to_queue(title)
+
+    # Starte den nächsten Download
+    start_downloads()
+    
+
+@app.route('/old_download', methods=['POST'])
 def download_file():
     url = request.form['url']
 
@@ -217,17 +301,21 @@ def download_file():
     elif url and url.startswith("https://open.spotify.com/"):
         if not spotify_available:
             return render_template('error.html', error_message="Der Admin hat Spotify leider nicht freigeschalten"), 400
-        song_name, artist = get_track_info(url)
-        videosSearch = VideosSearch(f"{song_name} {artist}", limit = 2)
-        link = videosSearch.result()['result'][0]['link']
-        result = download_from_youtube(link, SONG_FOLDER)
-        if 'error' in result:
-            print(f"Fehler: {result['error']}")
-            return render_template('error.html', error_message=f"Fehler: {result['error']}"), 400
+        
+        if url.startswith("https://open.spotify.com/playlist/"):
+            return render_template('error.html', error_message="Spotify Playlists sind noch nicht unterstützt."), 400
         else:
-            print(f"Erfolgreich heruntergeladen: {result['title']}")
-            title = result.get('title', None)
-            add_to_queue(title)
+            song_name, artist = get_track_info(url)
+            videosSearch = VideosSearch(f"{song_name} {artist}", limit = 2)
+            link = videosSearch.result()['result'][0]['link']
+            result = download_from_youtube(link, SONG_FOLDER)
+            if 'error' in result:
+                print(f"Fehler: {result['error']}")
+                return render_template('error.html', error_message=f"Fehler: {result['error']}"), 400
+            else:
+                print(f"Erfolgreich heruntergeladen: {result['title']}")
+                title = result.get('title', None)
+                add_to_queue(title)
     
     elif url:
         videosSearch = VideosSearch(url, limit = 2)
@@ -364,4 +452,5 @@ if __name__ == '__main__':
         TEMPLATES_AUTO_RELOAD = True
     )
     app.register_error_handler(404, page_not_found)  # Registriert die benutzerdefinierte Fehlerseite
+    app.secret_key = os.urandom(24)  # Generiert einen zufälligen Schlüssel für die Sitzungsverwaltung
     app.run(host='0.0.0.0', port=80)

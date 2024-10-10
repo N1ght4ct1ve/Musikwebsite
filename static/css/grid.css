@@ -274,7 +274,7 @@ body {
   background: linear-gradient(45deg, var(--fade-color2) 70%, var(--fade-color3) 100%);
   padding: 10px 25px;
   height: 20vh;
-  max-height: 10%;
+  max-height: 100%; /* Maybe ändern */
   overflow: hidden;
   overflow-y:scroll;
 }

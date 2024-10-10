@@ -59,6 +59,13 @@
                 <input class="inputfield" type="text" name="url" placeholder="YouTube URL">
                 <input class="button1" type="submit" value="Download from YouTube">
             </form>
+            {% if download_status %}
+              <div class="alert {{ 'alert-success' if 'erfolgreich' in download_status else 'alert-danger' }} slide-in">
+                {{ download_status }}
+              </div>
+            {% endif %}
+        
+
         </div>
     <div class="parent">
     <div class="current_song_view">
