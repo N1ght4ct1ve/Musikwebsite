@@ -16,7 +16,7 @@ def clean_title(title):
     return ' '.join(title.split()).strip()
 
 def clean_title_with_regex(title):
-    # Beispiel-Regex: Entfernt alles, was in runden Klammern steht
+    # Entfernt alles, was in runden Klammern steht
     cleaned_title = re.sub(r'\(.*?\)', '', title)
     return cleaned_title
 
@@ -33,6 +33,19 @@ def duration_live_and_playlist_filter(info_dict, incomplete):
     if minimal_duration <= duration <= maximal_duration:
         return None
     return 'Das Video ist nicht zwischen 10 Sekunden und 10 Minuten lang.'
+
+def get_title_from_youtube(url):
+    try:
+        with youtube_dl.YoutubeDL({'format': 'mp3/bestaudio'}) as ydl:
+            # Informationen zum Video abrufen
+            info = ydl.extract_info(url, download=False)
+            title = clean_title(info.get('title', 'Unknown Title'))
+            return title
+
+    except youtube_dl.utils.DownloadError as e:
+        return str(e)
+    except Exception as e:
+        return str(e)
 
 def download_from_youtube(url, path):
     global minimal_duration, maximal_duration
